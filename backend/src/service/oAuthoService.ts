@@ -10,7 +10,7 @@ export const createOAuthUserTable = async (): Promise<void> => {
       authoId INT UNIQUE,
       authoProvider VARCHAR(255),
       email VARCHAR(255) UNIQUE,
-      password_hash VARCHAR(255),
+      password VARCHAR(255),
       name VARCHAR(255),
       role VARCHAR(50) DEFAULT 'guest',
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -32,8 +32,9 @@ export const createOAuthUser = async (email: string, name: string, password: str
   authoProvider: string, role: string): Promise<OAuthUser> => {
   const salt = await bcrypt.genSalt(10);
   const password_hash = await bcrypt.hash(password, salt);
+
   const { rows } = await query(
- 'INSERT INTO oauth_users (authoId, authoProvider, email, name, role, password_hash)VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+ 'INSERT INTO oauth_users (authoId, authoProvider, email, name, role, password)VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
  [authoId, authoProvider, email, name, role, password_hash]
   );
   return rows[0];
