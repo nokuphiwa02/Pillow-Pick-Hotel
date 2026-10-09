@@ -54,7 +54,6 @@ export const login = async (req: Request, res: Response) => {
 
 export const getAllUsers = async (req: Request, res: Response) => {
     try {
-        const userRole = (req as Request & { user?: { role?: string } }).user?.role;
 
         if (req.user!.role !== 'admin') {
             return res.status(403).json({ message: "Only Admin can get all users" })
@@ -66,5 +65,24 @@ export const getAllUsers = async (req: Request, res: Response) => {
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: "Error retrieving user" })
+    }
+};
+
+export const getUserById = async(req: Request, res:Response) => {
+    try{
+        if(req.user!.role !== 'guest'){
+        return res.status(403).json({ message: "Only guest can get users by Id" })
+        }
+       const id = parseInt(req.params.id as string);
+       const user = await oAuthoService.findUserById(id)
+
+       if(!user){
+        return res.status(404).json({message:"user not found"})
+       }
+       return res.status(200).json(user)
+
+    }catch(error){
+        console.log(error)
+     res.status(500).json({message:"error retrieving user"})
     }
 };
