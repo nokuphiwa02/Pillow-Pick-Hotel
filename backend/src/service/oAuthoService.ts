@@ -56,7 +56,7 @@ export const findUserById = async(id: number): Promise<OAuthUser | null> => {
 };
 
 //by Guest
-export const updateUserProfile = async(id: number, appData:OAuthUser ): Promise<OAuthUser | null> => {
+export const updateUserById = async(id: number, appData:OAuthUser ): Promise<OAuthUser | null> => {
     const {email,name,password,role} = appData
     const { rows } = await query(`UPDATE oauth_users 
         SET email = COALESCE($1,email),
@@ -71,7 +71,7 @@ export const updateUserProfile = async(id: number, appData:OAuthUser ): Promise<
 };
 
 //by Admin
-export const deleteUser = async(id: number): Promise<OAuthUser | null> =>{
+export const deleteUserById = async(id: number): Promise<OAuthUser | null> =>{
     const { rows } =await query(
         `DELETE FROM oauth_users WHERE id = $1 RETURNING *`,
         [id]
