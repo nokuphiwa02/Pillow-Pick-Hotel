@@ -4,6 +4,7 @@ export interface OAuthUser {
   id: string;
   authoId: number;
   authoProvider: string;
+  password: string;
   email: string;
   name: string;
   role: userRole;
