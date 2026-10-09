@@ -51,14 +51,14 @@ export const findAllusers = async(): Promise<OAuthUser[]> => {
 
 //by Guest
 export const findUserById = async(id: number): Promise<OAuthUser | null> => {
-    const { rows } = await query(`SELECT * FROM autho_users WHERE id= $1` ,[id]);
+    const { rows } = await query(`SELECT * FROM oauth_users WHERE id= $1` ,[id]);
     return rows[0] || null;
 };
 
 //by Guest
 export const updateUserProfile = async(id: number, appData:OAuthUser ): Promise<OAuthUser | null> => {
     const {email,name,password,role} = appData
-    const { rows } = await query(`UPDATE autho_users 
+    const { rows } = await query(`UPDATE oauth_users 
         SET email = COALESCE($1,email),
         name = COALESCE($2,name),
         password = COALESCE($3,password),
@@ -73,7 +73,7 @@ export const updateUserProfile = async(id: number, appData:OAuthUser ): Promise<
 //by Admin
 export const deleteUser = async(id: number): Promise<OAuthUser | null> =>{
     const { rows } =await query(
-        `DELETE FROM autho_users WHERE id = $1 RETURNING *`,
+        `DELETE FROM oauth_users WHERE id = $1 RETURNING *`,
         [id]
     );
     return rows [0] || null
