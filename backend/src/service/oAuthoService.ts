@@ -38,5 +38,45 @@ export const createOAuthUser = async (email: string, name: string, password: str
  [authoId, authoProvider, email, name, role, password_hash]
   );
   return rows[0];
-}
+};
+
+//by Admin
+export const findAllusers = async(): Promise<OAuthUser[]> => {
+    const { rows } = await query(
+        `SELECT id, authoId,authoProvider,email,name,role,createdat 
+        FROM oauth_users ORDER BY id ASC`
+    );
+    return rows;
+};
+
+//by Guest
+export const findUserById = async(id: number): Promise<OAuthUser | null> => {
+    const { rows } = await query(`SELECT * FROM autho_users WHERE id= $1` ,[id]);
+    return rows[0] || null;
+};
+
+//by Guest
+export const updateUserProfile = async(id: number, appData:OAuthUser ): Promise<OAuthUser | null> => {
+    const {email,name,password,role} = appData
+    const { rows } = await query(`UPDATE autho_users 
+        SET email = COALESCE($1,email),
+        name = COALESCE($2,name),
+        password = COALESCE($3,password),
+        role = COALESCE($4,role)
+        WHERE id = $5
+        RETURNING * `,
+        [email ,name,password,password,id]
+    );
+    return rows[0] || null;
+};
+
+//by Admin
+export const deleteUser = async(id: number): Promise<OAuthUser | null> =>{
+    const { rows } =await query(
+        `DELETE FROM autho_users WHERE id = $1 RETURNING *`,
+        [id]
+    );
+    return rows [0] || null
+};
      
+
