@@ -8,6 +8,7 @@ export interface OAuthUser {
   email: string;
   name: string;
   role: userRole;
+  phone: number;
   createdAt: Date;
 }
 
