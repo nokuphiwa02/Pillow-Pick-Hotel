@@ -2,23 +2,15 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-export const UserRole = {
-  USER: 'user',
-  ADMIN: 'admin'
-} as const;
 
-export type UserRoleType = typeof UserRole[keyof typeof UserRole];
+
 
 export interface OAuthUser {
   id: string;
-  authoId: number;
-  authoProvider: string;
   password: string;
   email: string;
   name: string;
-  role: UserRoleType;
   phone: number;
-  createdAt?: Date;
 }
 
 interface UserState extends OAuthUser {
@@ -32,10 +24,6 @@ const initialState: UserState = {
   email: "",
   password: "",
   phone : 0,
-  authoId : 0,
-  authoProvider:"",
-  role: UserRole.USER,
-  createdAt: new Date(),
   isLoading: false,
   error: null,
 };
@@ -43,10 +31,10 @@ const initialState: UserState = {
 export const RegisterThunk = createAsyncThunk(
   "users/RegisterThunk",
   async (newUser: Omit<OAuthUser, "id">) => {
-    const response = await fetch("http://localhost:5000/users", {
+    const response = await fetch("/api/autho/register", {
       method: "POST",
       headers: {
-        "Contene-Type": "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(newUser),
     });
@@ -74,15 +62,6 @@ export const RegisterSlice = createSlice({
      AddPassword: (state, action: PayloadAction<string>) => {
       state.password = action.payload;
     },
-    AddauthoId: (state, action: PayloadAction<number>) => {
-      state.authoId = action.payload;
-    },
-     AddauthoProvider: (state, action: PayloadAction<string>) => {
-      state.authoProvider = action.payload;
-    },
-     updateRole: (state, action: PayloadAction<UserRoleType>) => {
-      state.role = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(RegisterThunk.pending, (state) => {
@@ -104,9 +83,6 @@ export const {
    AddPhone,
    AddEmailAddress,
    AddPassword,
-   AddauthoId,
-   AddauthoProvider,
-   updateRole
 } = RegisterSlice.actions;
 
 export default RegisterSlice.reducer;
