@@ -1,0 +1,47 @@
+.container {
+  background-color: #2C5E43; 
+  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbarContent {
+  background-color: #DFF8EE; 
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 12px 24px;
+  border-radius: 8px; 
+  gap: 15px;
+}
+
+.icon {
+  width: 40px;
+  height: auto;
+  object-fit: contain;
+}
+
+.tittle {
+  color: #133824; 
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-right: auto; 
+}
+
+.regBtn, .lgnbtn {
+  width: 55px;
+  background-color: #2C5E43; 
+  color: #FFFFFF; 
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.regBtn:hover, .lgnbtn:hover {
+  background-color: #1d3f2d; 
+}
+
