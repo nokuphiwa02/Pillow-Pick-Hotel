@@ -3,12 +3,13 @@ import dotenv from 'dotenv';
 import { testDbConnection } from './config/database';
 import { createOAuthUserTable } from './service/oAuthoService';
 import oAuthoRoutes from './routes/oAuthoRoutes';
+
 // import { await } from 'react-router-dom';
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   app.use(express.json());
