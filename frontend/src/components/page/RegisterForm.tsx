@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../../store";
 import { RegisterThunk,  AddName, AddPhone, AddEmailAddress,
-    AddPassword,AddauthoId,AddauthoProvider,updateRole} from "../../redux/registerSlice";
+    AddPassword} from "../../redux/registerSlice";
 
 export const Register = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ export const Register = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const { name, phone, email, password,authoId , authoProvider, role} =
+  const { name, phone, email, password} =
     useSelector((state: RootState) => state.signUp);
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -27,10 +27,7 @@ export const Register = () => {
       !name.trim() ||
       !phone ||
       !email.trim() ||
-      !authoId||
-      !password.trim() ||
-      !authoProvider.trim() ||
-      !role.trim() 
+      !password.trim() 
     ) {
       setError("All fields are required.");
       return;
@@ -41,10 +38,7 @@ export const Register = () => {
         name,
         phone,
         email,
-        password,
-        authoId,
-        role,
-        authoProvider,
+        password
       }),
     );
 
@@ -91,17 +85,7 @@ export const Register = () => {
         
         <div className={styles.secondInfo}>
           
-          <div className={styles.authoProvider}>
-            <label>authoProvider:</label>
-            
-            <input
-              type="authoProvider"
-              className={styles.authoProvider}
-              value={authoProvider}
-              onChange={(e) => dispatch( AddauthoProvider(e.target.value))}
-            />
-            
-          </div>
+        
           
           <div className={styles.email}>
             <label>Email Address:</label>
@@ -131,29 +115,9 @@ export const Register = () => {
             
           </div>
           
-          <div className={styles.Autho}>
-            <label>AuthoId:</label>
-            
-            <input
-              type="authoId"
-              className={styles.authoId}
-              value={authoId}
-              onChange={(e) => dispatch( AddauthoId(Number(e.target.value)))}
-            />
-            
-          </div>
           
         </div>
-        <div className={styles.role}>
-            <label>Role:</label>
-            
-            <input
-              type="text"
-              className={styles.role}
-              value={role}
-              onChange={(e) => dispatch(updateRole(e.target.value as typeof role))}
-            />
-        </div>
+       
         
         <button
           className={styles.registerBtn}
