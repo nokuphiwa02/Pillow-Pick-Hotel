@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from "cors"
 import { testDbConnection } from './config/database';
 import { createOAuthUserTable } from './service/oAuthoService';
 import oAuthoRoutes from './routes/oAuthoRoutes';
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   app.use(express.json());
+  app.use(cors())
 
   await testDbConnection();
 
