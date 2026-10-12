@@ -13,6 +13,7 @@ export const createOAuthUserTable = async (): Promise<void> => {
       password VARCHAR(255),
       name VARCHAR(255),
       role VARCHAR(50) DEFAULT 'guest',
+      phone INT UNIQUE,
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
