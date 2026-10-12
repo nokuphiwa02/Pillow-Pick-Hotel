@@ -29,14 +29,13 @@ export const getOAuthUserByEmail = async (email: string): Promise<OAuthUser | nu
   return rows[0] || null;
 };
 
-export const createOAuthUser = async (email: string, name: string, password: string, authoId: number,
-  authoProvider: string, role: string): Promise<OAuthUser> => {
+export const createOAuthUser = async (email: string, name: string, password: string, phone:number): Promise<OAuthUser> => {
   const salt = await bcrypt.genSalt(10);
   const password_hash = await bcrypt.hash(password, salt);
 
   const { rows } = await query(
- 'INSERT INTO oauth_users (authoId, authoProvider, email, name, role, password)VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
- [authoId, authoProvider, email, name, role, password_hash]
+ 'INSERT INTO oauth_users ( email, name,phone, password)VALUES ($1, $2, $3, $4) RETURNING *',
+ [ email, name,phone, password_hash]
   );
   return rows[0];
 };
