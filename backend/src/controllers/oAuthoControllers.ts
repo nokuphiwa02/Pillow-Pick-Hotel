@@ -4,8 +4,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 export const register = async (req: Request, res: Response) => {
-    const { authoId, authoProvider, email, name, role, password } = req.body;
-    if (!authoId || !authoProvider || !email || !name || !role || !password) {
+    const {  email, name, password,phone } = req.body;
+    if ( !email || !name || !password || !phone) {
         return res.status(400).json({ message: "Missing required fields" });
     }
     try {
@@ -13,7 +13,7 @@ export const register = async (req: Request, res: Response) => {
         if (existingUser) {
             return res.status(409).json({ message: "email is already exist" })
         }
-        const user = await oAuthoService.createOAuthUser(email, name, password, authoId, authoProvider, role);
+        const user = await oAuthoService.createOAuthUser(email, name, password, phone);
         res.status(201).json({ message: "user registered successfully" });
     } catch (error) {
         console.error("register error:", error);
