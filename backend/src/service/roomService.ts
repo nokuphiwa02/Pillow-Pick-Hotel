@@ -34,10 +34,14 @@ export const createRoomsTable = async (): Promise<void> => {
 };
 
 export const createRooms = async(appData: NewRooms): Promise<Rooms> =>{
-    const {hotel_id,room_type,capacity,quantity,description,price_per_night} = appData
-    const { rows} = await query(`
+    const { hotel_id, room_type, capacity, quantity, description, price_per_night} = appData
+
+    const { rows} = await query(
+        `
         INSERT INTO rooms(hotel_id,room_type,capacity,quantity,description,price_per_night) 
-        VALUES($1,$2,$3,$4,$5,$6)RETURNING *`,
+        VALUES($1, $2, $3, $4, $5, $6)
+        RETURNING *
+        `,
         [hotel_id,room_type,capacity,quantity,description,price_per_night]
         );
         return rows[0];
