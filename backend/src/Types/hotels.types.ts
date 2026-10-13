@@ -5,7 +5,6 @@ address:string;
 city:string;
 rating: number;
 description: string;
-image : string[];
 createdAt_at:Date;
 }
 
