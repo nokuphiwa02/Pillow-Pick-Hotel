@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { Hotels, NewHotels } from '../Types/hotels.types';
 
 export const createHotelsTable = async (): Promise<void> => {
-    const {rows} = await query(`
+    await query(`
     CREATE TABLE IF NOT EXISTS hotels(
     id SERIAL PRIMARY KEY,
     hotel_name VARCHAR(200),
