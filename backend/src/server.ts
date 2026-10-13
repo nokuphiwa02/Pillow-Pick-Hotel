@@ -5,7 +5,9 @@ import { testDbConnection } from './config/database';
 import { createOAuthUserTable } from './service/oAuthoService';
 import oAuthoRoutes from './routes/oAuthoRoutes';
 import hotelRoutes from './routes/hotelRoutes';
+import roomRoutes from './routes/roomRoutes';
 import { createHotelsTable } from './service/hotelService'
+import { createRoomsTable } from './service/roomService';
 
 
 dotenv.config();
@@ -22,6 +24,7 @@ const startServer = async () => {
   const creatingTables = async () => {
     await createOAuthUserTable();
     await createHotelsTable ();
+    await createRoomsTable();
 
 
 
@@ -29,7 +32,8 @@ const startServer = async () => {
   creatingTables();
  
   app.use("/api/autho",oAuthoRoutes);
-  app.use("/api",hotelRoutes )
+  app.use("/api",hotelRoutes );
+  app.use("/api",roomRoutes)
 
 
 app.listen(PORT, () => {
