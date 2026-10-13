@@ -4,8 +4,9 @@ import cors from "cors"
 import { testDbConnection } from './config/database';
 import { createOAuthUserTable } from './service/oAuthoService';
 import oAuthoRoutes from './routes/oAuthoRoutes';
+import hotelRoutes from './routes/hotelRoutes';
+import { createHotelsTable } from './service/hotelService'
 
-// import { await } from 'react-router-dom';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ const startServer = async () => {
 
   const creatingTables = async () => {
     await createOAuthUserTable();
+    await createHotelsTable ();
 
 
 
@@ -27,6 +29,7 @@ const startServer = async () => {
   creatingTables();
  
   app.use("/api/autho",oAuthoRoutes);
+  app.use("/api",hotelRoutes )
 
 
 app.listen(PORT, () => {
