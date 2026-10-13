@@ -1,7 +1,7 @@
 export type userRole = "admin" | "guest";
 
 export interface OAuthUser {
-  id: string;
+  id: number;
   authoId: number;
   authoProvider: string;
   password: string;
