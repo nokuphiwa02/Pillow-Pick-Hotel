@@ -7,6 +7,7 @@ import oAuthoRoutes from './routes/oAuthoRoutes';
 import hotelRoutes from './routes/hotelRoutes';
 import roomRoutes from './routes/roomRoutes';
 import bookingRoutes from './routes/bookingRoutes'
+import reviewRoutes from './routes/reviewRoutes'
 import { createHotelsTable } from './service/hotelService'
 import { createRoomsTable } from './service/roomService';
 import { createBookingTables } from './service/bookingService';
@@ -40,6 +41,7 @@ const startServer = async () => {
   app.use("/api",hotelRoutes );
   app.use("/api",roomRoutes);
   app.use("/api",bookingRoutes);
+  app.use("/api", reviewRoutes);
 
 
 app.listen(PORT, () => {
