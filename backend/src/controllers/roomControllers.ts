@@ -1,7 +1,6 @@
 import { Request,Response } from "express";
 import * as roomService from "../service/roomService"
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+
 
 export const addRoom = async (req: Request, res: Response) => {
     try{
