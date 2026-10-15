@@ -6,8 +6,11 @@ import { createOAuthUserTable } from './service/oAuthoService';
 import oAuthoRoutes from './routes/oAuthoRoutes';
 import hotelRoutes from './routes/hotelRoutes';
 import roomRoutes from './routes/roomRoutes';
+import bookingRoutes from './routes/bookingRoutes'
 import { createHotelsTable } from './service/hotelService'
 import { createRoomsTable } from './service/roomService';
+import { createBookingTables } from './service/bookingService';
+import { createReviewsTable } from './service/reviewService'
 
 
 dotenv.config();
@@ -25,6 +28,8 @@ const startServer = async () => {
     await createOAuthUserTable();
     await createHotelsTable ();
     await createRoomsTable();
+    await createBookingTables();
+    await createReviewsTable();
 
 
 
@@ -33,7 +38,8 @@ const startServer = async () => {
  
   app.use("/api/autho",oAuthoRoutes);
   app.use("/api",hotelRoutes );
-  app.use("/api",roomRoutes)
+  app.use("/api",roomRoutes);
+  app.use("/api",bookingRoutes);
 
 
 app.listen(PORT, () => {
