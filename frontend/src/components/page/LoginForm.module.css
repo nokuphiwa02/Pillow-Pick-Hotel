@@ -1,0 +1,119 @@
+/* Color Palette Config - Adjust these hex values to match your app if needed */
+:root {
+  --bg-mint: #A3D9C9;       /* Mint background layout color */
+  --card-cream: #F4FBF7;    /* Inner cream card color */
+  --forest-green: #2B5E34;  /* Deep green theme color */
+  --white: #ffffff;
+  --input-border: #cccccc;
+}
+
+.loginContainer { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  min-height: 100vh; 
+  background-color: var(--bg-mint); 
+  font-family: sans-serif; 
+  margin: 0; 
+  padding: 20px; 
+  box-sizing: border-box;
+} 
+
+.loginCard { 
+  background-color: var(--card-cream); 
+  border: 4px solid var(--forest-green); 
+  border-radius: 4px; 
+  padding: 40px; 
+  width: 100%; 
+  max-width: 500px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); 
+  box-sizing: border-box; 
+} 
+
+.tittle { 
+  color: var(--forest-green); 
+  text-align: center; 
+  font-size: 2rem; 
+  letter-spacing: 1px; 
+  margin-top: 0; 
+  margin-bottom: 30px; 
+  text-transform: uppercase; 
+} 
+
+.email, .password { 
+  display: flex; 
+  flex-direction: column; 
+  margin-bottom: 24px; 
+} 
+
+.email label, .password label { 
+  color: var(--forest-green); 
+  font-size: 1rem; 
+  margin-bottom: 8px; 
+  text-align: center; 
+} 
+
+.emailInput, .passwordInput { 
+  background-color: var(--white); 
+  border: 1px solid var(--input-border); 
+  border-radius: 4px; 
+  padding: 12px; 
+  font-size: 1rem; 
+  color: #333; 
+  outline: none; 
+  transition: border-color 0.2s; 
+  box-sizing: border-box;
+  width: 100%;
+} 
+
+.emailInput:focus, .passwordInput:focus { 
+  border-color: var(--forest-green); 
+} 
+
+.loginBtn { 
+  background-color: var(--forest-green); 
+  color: var(--white); 
+  border: none; 
+  border-radius: 4px; 
+  padding: 12px; 
+  font-size: 1.1rem; 
+  font-weight: bold; 
+  cursor: pointer; 
+  width: 100%; 
+  margin-bottom: 12px; 
+  transition: opacity 0.2s; 
+} 
+
+.loginBtn:hover:not(:disabled) { 
+  opacity: 0.9; 
+} 
+
+.loginBtn:disabled { 
+  opacity: 0.6; 
+  cursor: not-allowed; 
+} 
+
+.registerBtn { 
+  background-color: var(--white); 
+  color: var(--forest-green); 
+  border: 1px solid var(--forest-green); 
+  border-radius: 4px; 
+  padding: 12px; 
+  font-size: 1.1rem; 
+  font-weight: bold; 
+  cursor: pointer; 
+  width: 100%; 
+  margin-bottom: 16px; 
+  transition: background-color 0.2s; 
+} 
+
+.registerBtn:hover { 
+  background-color: #EAF4EE; 
+} 
+
+.account { 
+  color: var(--forest-green); 
+  text-align: center; 
+  font-size: 0.9rem; 
+  margin: 0; 
+}
