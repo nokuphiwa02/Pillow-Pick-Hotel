@@ -1,22 +1,18 @@
-/* ===================================================
-   IKHODI YOKUGCINA: HERO.MODULE.CSS (IMIBALA NO-WHITE)
-   =================================================== */
 
-/* 1. Uhlaka Olungaphandle Oluluhlaza Okumnyama (Dark Green Frame) */
 .heroContainer {
-  position: relative; /* Kubalulekile ukuze umbhalo uhlale PHEZU kwesithombe */
+  position: relative; 
   width: 100%;
   min-height: 100vh;
   box-sizing: border-box;
-  background-color: #276247; /* Umbala ofana nse ne-Photo 1 ngaphandle */
-  padding: 40px; /* Ushiya isikhala sika-dark green emaceleni */
+  background-color: #276247;
+  padding: 40px; 
   
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* 2. Uhlaka Lwangaphakathi Oluluhlaza Okulula (Light Green Frame Effect) */
+
 .heroContainer::before {
   content: "";
   position: absolute;
@@ -24,62 +20,60 @@
   bottom: 20px;
   left: 20px;
   right: 20px;
-  background-color: #d8f1e5; /* Umbala o-Light Green we-background */
+  background-color: #d8f1e5; 
   border-radius: 6px;
-  z-index: 1; /* Uhlala ngaphansi kwesithombe nombhalo */
+  z-index: 1; 
 }
 
-/* 3. Isithombe sakho sesinciphile saba rectangular phakathi nendawo */
+
 .heroContainer img {
   position: relative;
   width: 100%;
-  max-width: 950px; /* Sinciphisa ububanzi besithombe */
-  height: 460px; /* Silungisa ukuphakama kwaso */
+  max-width: 950px; 
+  height: 460px; 
   object-fit: cover;
   display: block;
   border-radius: 4px;
-  z-index: 2; /* Uhlala ngenhla kwe-light green background */
-}
+  z-index: 2;
+ }
 
-/* 4. Ibhokisi elibeka okuqukethwe PHEZU kwesithombe sakho ngesokudla */
+
 .heroContainer div, 
 .heroContainer [class*="Content"],
 .heroContainer [class*="Overlay"] {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Ibeka ibhokisi lombhalo nse phezulu kwesithombe */
+  transform: translate(-50%, -50%);  
   width: 100%;
   max-width: 950px;
   height: 460px;
-  z-index: 3; /* Lifaka umbhalo phezulu kakhulu kwesithombe */
-  
-  /* Flexbox yokubeka umbhalo ngesokudla njenge-Photo 1 */
+  z-index: 3; 
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   
-  /* Pushes the text box to the right side of the image background */
+ 
   padding-left: 45%; 
   padding-right: 5%;
   box-sizing: border-box;
   
-  /* Umthunzi omnyama owenza umbhalo o-white ubonakale kahle kakhulu */
+
   background: linear-gradient(to right, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 0.5) 100%);
   border-radius: 4px;
   pointer-events: none;
 }
 
-/* 5. POQO: YENZA LE CONTENT EBALULEKILEYO IBE MHLOPHE (WHITE) */
+
 .heroContainer h1, 
 .heroContainer p,
 .heroContainer span,
 .heroContainer div,
 .heroContainer * {
-  color: #ffffff !important; /* Iqinisekisa umbala omhlophe we-Content nakanjani */
+  color: #ffffff ; 
   font-family: Arial, Helvetica, sans-serif;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9) !important; /* Isithunzi esenza umbhalo omhlophe ugqame esibhakabhakeni */
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9); 
 }
 
 
@@ -91,5 +85,5 @@
 
 .heroContainer p {
   font-size: 1.2rem ;
-  margin: 4px 0 !important;
+  margin: 4px 0 ;
 }
