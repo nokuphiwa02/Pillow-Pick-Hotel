@@ -1,18 +1,10 @@
-/* Color Palette Config - Adjust these hex values to match your app if needed */
-:root {
-  --bg-mint: #A3D9C9;       /* Mint background layout color */
-  --card-cream: #F4FBF7;    /* Inner cream card color */
-  --forest-green: #2B5E34;  /* Deep green theme color */
-  --white: #ffffff;
-  --input-border: #cccccc;
-}
 
 .loginContainer { 
   display: flex; 
   justify-content: center; 
   align-items: center; 
   min-height: 100vh; 
-  background-color: var(--bg-mint); 
+  background-color: #a3d9c9; 
   font-family: sans-serif; 
   margin: 0; 
   padding: 20px; 
@@ -20,8 +12,8 @@
 } 
 
 .loginCard { 
-  background-color: var(--card-cream); 
-  border: 4px solid var(--forest-green); 
+  background-color:  white; 
+  border: 4px solid #228B22; 
   border-radius: 4px; 
   padding: 40px; 
   width: 100%; 
@@ -31,7 +23,7 @@
 } 
 
 .tittle { 
-  color: var(--forest-green); 
+  color: #228B22; 
   text-align: center; 
   font-size: 2rem; 
   letter-spacing: 1px; 
@@ -47,15 +39,15 @@
 } 
 
 .email label, .password label { 
-  color: var(--forest-green); 
+  color: #228B22; 
   font-size: 1rem; 
   margin-bottom: 8px; 
   text-align: center; 
 } 
 
 .emailInput, .passwordInput { 
-  background-color: var(--white); 
-  border: 1px solid var(--input-border); 
+  background-color: #FFFFFF; 
+  border: 1px solid #CCCCCC; 
   border-radius: 4px; 
   padding: 12px; 
   font-size: 1rem; 
@@ -67,12 +59,12 @@
 } 
 
 .emailInput:focus, .passwordInput:focus { 
-  border-color: var(--forest-green); 
+  border-color: #228B22; 
 } 
 
 .loginBtn { 
-  background-color: var(--forest-green); 
-  color: var(--white); 
+  background-color: #228B22; 
+  color:#FFFFFF; 
   border: none; 
   border-radius: 4px; 
   padding: 12px; 
@@ -94,9 +86,9 @@
 } 
 
 .registerBtn { 
-  background-color: var(--white); 
-  color: var(--forest-green); 
-  border: 1px solid var(--forest-green); 
+  background-color: #FFFFFF; 
+  color: #228B22; 
+  border: 1px solid #228B22; 
   border-radius: 4px; 
   padding: 12px; 
   font-size: 1.1rem; 
@@ -112,7 +104,7 @@
 } 
 
 .account { 
-  color: var(--forest-green); 
+  color: #228B22; 
   text-align: center; 
   font-size: 0.9rem; 
   margin: 0; 

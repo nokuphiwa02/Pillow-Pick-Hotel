@@ -1,0 +1,24 @@
+.cardContainer{
+width: 240px;
+border-radius: 16px;
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+display: flex;
+flex-direction: column;
+margin: 8px;
+}
+
+.htlImg{
+width: 100%;
+border-radius: 16px 16px 0 0;
+}
+
+.cardBtn{
+text-align: center;
+width: 90%;
+border-radius: 5px;
+padding: 8px 16px;
+background-color: #2d5a27;
+color:#ffffff;
+text-decoration: none;
+margin:8px;
+}
