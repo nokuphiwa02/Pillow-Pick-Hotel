@@ -22,7 +22,7 @@ export const createBookingTables = async(): Promise<void> => {
             booking_status VARCHAR(50) NOT NULL DEFAULT 'Pending',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
              )
-            `);
+            `)
             try{
                 console.log('bookings table created successfully');
             }catch(error){
