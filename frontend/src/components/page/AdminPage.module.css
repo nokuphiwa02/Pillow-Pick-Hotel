@@ -1,0 +1,231 @@
+/* Container holds everything and matches the login background color */
+.container { 
+  display: flex; 
+  flex-direction: column;
+  align-items: center; 
+  min-height: 100vh; 
+  background-color: #a3d9c9; 
+  font-family: sans-serif; 
+  margin: 0; 
+  padding: 40px 20px; 
+  box-sizing: border-box;
+} 
+
+/* Title matching the login layout */
+.title { 
+  color: #228B22; 
+  text-align: center; 
+  font-size: 2.2rem; 
+  letter-spacing: 1px; 
+  margin-top: 0; 
+  margin-bottom: 35px; 
+  text-transform: uppercase; 
+} 
+
+.errorMessage {
+  background-color: #fee2e2;
+  border: 2px solid #dc2626;
+  color: #dc2626;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 25px;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Beautiful card wrapper for the form - matches loginCard exactly */
+.formWrapper { 
+  background-color: white; 
+  border: 4px solid #228B22; 
+  border-radius: 4px; 
+  padding: 40px; 
+  width: 100%; 
+  max-width: 600px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); 
+  box-sizing: border-box; 
+  margin-bottom: 50px; /* Separates the form and the data table */
+} 
+
+.formTitle { 
+  color: #228B22; 
+  text-align: center; 
+  font-size: 1.5rem; 
+  margin-top: 0; 
+  margin-bottom: 25px; 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px;
+} 
+
+/* Vertical layout ensuring items aren't squished together */
+.form { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 24px; /* Generous gap between input rows */
+} 
+
+/* Form text elements, inputs, and textareas */
+.inputField, .textareaField { 
+  background-color: #FFFFFF; 
+  border: 1px solid #CCCCCC; 
+  border-radius: 4px; 
+  padding: 12px; 
+  font-size: 1rem; 
+  color: #333; 
+  outline: none; 
+  transition: border-color 0.2s; 
+  box-sizing: border-box;
+  width: 100%;
+} 
+
+.inputField:focus, .textareaField:focus { 
+  border-color: #228B22; 
+} 
+
+.textareaField {
+  resize: vertical;
+}
+
+/* Layout for ratings and image wrappers */
+.labelGroup { 
+  display: flex; 
+  flex-direction: column; 
+  color: #228B22; 
+  font-size: 1rem; 
+  gap: 8px;
+  font-weight: bold;
+} 
+
+/* Specific file input element custom styling alignment */
+.labelGroup input[type="file"] {
+  padding: 8px 0;
+  color: #333;
+  font-weight: normal;
+}
+
+/* Primary Action Button (Matches loginBtn) */
+.submitButton { 
+  background-color: #228B22; 
+  color: #FFFFFF; 
+  border: none; 
+  border-radius: 4px; 
+  padding: 14px; 
+  font-size: 1.1rem; 
+  font-weight: bold; 
+  cursor: pointer; 
+  width: 100%; 
+  margin-top: 10px;
+  transition: opacity 0.2s; 
+} 
+
+.submitButton:hover:not(:disabled) { 
+  opacity: 0.9; 
+} 
+
+.submitButton:disabled { 
+  opacity: 0.6; 
+  cursor: not-allowed; 
+} 
+
+/* --- TABLE SECTION FOR REGISTERED DATA --- */
+
+.sectionTitle {
+  color: #228B22;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.loadingText {
+  color: #228B22;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* Scroll container wrapper for tablet/mobile interfaces */
+.tableWrapper {
+  width: 100%;
+  max-width: 900px;
+  background-color: white;
+  border: 4px solid #228B22;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+
+.hotelTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.tableHeader {
+  background-color: #228B22;
+  color: #FFFFFF;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 16px;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.tableRow {
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #EAF4EE;
+}
+
+.tableRow:hover {
+  background-color: #EAF4EE; /* Soft tint on hover */
+}
+
+.tableCell {
+  padding: 16px;
+  color: #333;
+  vertical-align: middle;
+}
+
+.hotelImage {
+  width: 90px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #CCCCCC;
+  display: block;
+}
+
+.noImagePlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 60px;
+  background-color: #f3f4f6;
+  color: #888;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  border: 1px dashed #CCCCCC;
+}
+
+.deleteButton,.updateButton { 
+  background-color: #FFFFFF; 
+  color: #dc2626; 
+  border: 1px solid #dc2626; 
+  border-radius: 4px; 
+  padding: 8px 16px; 
+  font-size: 0.95rem; 
+  font-weight: bold; 
+  cursor: pointer; 
+  transition: background-color 0.2s; 
+} 
+
+.deleteButton:hover { 
+  background-color: #fef2f2; 
+}
+
+.updateButton:hover { 
+  background-color: #fef2f2; 
+}

@@ -27,7 +27,7 @@ export const LoginForm = () => {
 
       if (LoginThunk.fulfilled.match(result)) {
         alert("Login successful");
-        navigate("/homepage");
+        navigate('/admin');
       }
     } else {
       alert("Please enter both email and password.");

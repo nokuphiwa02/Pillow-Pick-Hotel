@@ -1,23 +1,27 @@
 import React from 'react'
 import styles from '../HotelCard/HotelCard.module.css'
+import { useNavigate } from 'react-router-dom'
 
 type HotelCardProps = {
   imgSrc: string
   imgAlt: string
-  city: string
+  hotel_name: string
   buttonText: string 
+  onClick : () => void
 }
 
-export const HotelCard = ({ imgSrc, imgAlt, city, buttonText }: HotelCardProps) => {
+export const HotelCard = ({ imgSrc, imgAlt, hotel_name, buttonText,onClick }: HotelCardProps) => {
+  
+  
+
   return (
-    <div className={styles.cardsGrid}>
     <div className={styles.cardContainer}>
       <img src={imgSrc} alt={imgAlt} className={styles.htlImg}/>
-      <h2 className={styles.topic}>{city}</h2>
-      <button className={styles.cardBtn}>{buttonText}</button>
-      </div>
-      </div>
+      <h2 className={styles.topic}>{hotel_name}</h2>
+      <button className={styles.cardBtn} onClick={onClick}>{buttonText}</button>
+     </div>
+     
   )
 }
 
-export default HotelCard
+export default HotelCard;

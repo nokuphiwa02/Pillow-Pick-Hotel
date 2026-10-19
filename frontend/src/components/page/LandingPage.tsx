@@ -1,4 +1,4 @@
-import React from 'react'
+
 import styles from "../page/LandingPage.module.css";
 import   Navbar  from '../navbar/navbar';
 import Hero from '../Hero/Hero';
@@ -9,16 +9,19 @@ import Bon from '../../assets/Bon.jpg'
 import Boutique from '../../assets/Boutique.jpg'
 import Luxuries from '../../assets/Luxuries.jpg'
 import images from '../../assets/images.jpg'
+import { useNavigate } from "react-router-dom";
 
 
 const LandingPage = () => {
+const navigate = useNavigate()
+
   const hotelData = [
-    { id: 1, imgSrc: hotelP, imgAlt: 'Durban Hotel', city: 'Durban', buttonText: 'View More' },
-    { id: 2, imgSrc: hotelpP, imgAlt: 'Cape Town Hotel', city: 'Cape Town', buttonText: 'View More' },
-    { id: 3, imgSrc: Bon, imgAlt: 'Johannesburg Hotel', city: 'Johannesburg', buttonText: 'View More' },
-    { id: 4, imgSrc: Boutique, imgAlt: 'Pretoria Hotel', city: 'Pretoria', buttonText: 'View More' },
-    { id: 5, imgSrc: Luxuries, imgAlt: 'Gqeberha Hotel', city: 'Gqeberha', buttonText: 'View More' },
-    { id: 6, imgSrc: images, imgAlt: 'Bloemfontein Hotel', city: 'Bloemfontein', buttonText: 'View More' },
+    { id: 1, imgSrc: hotelP, imgAlt: 'Durban Hotel', hotel_name: 'Boutique hotel', buttonText: 'View More' },
+    { id: 2, imgSrc: hotelpP, imgAlt: 'Cape Town Hotel', hotel_name: 'Bon hotel', buttonText: 'View More' },
+    { id: 3, imgSrc: Bon, imgAlt: 'Johannesburg Hotel', hotel_name: 'Luxuries hotel', buttonText: 'View More' },
+    { id: 4, imgSrc: Boutique, imgAlt: 'Pretoria Hotel', hotel_name: 'Orchid hotel', buttonText: 'View More' },
+    { id: 5, imgSrc: Luxuries, imgAlt: 'Gqeberha Hotel', hotel_name: 'Brittanica hotel', buttonText: 'View More' },
+    { id: 6, imgSrc: images, imgAlt: 'Bloemfontein Hotel', hotel_name: 'Bayside hotel', buttonText: 'View More' },
   ];
   return (
     <div>
@@ -30,8 +33,9 @@ const LandingPage = () => {
             key={hotel.id} 
             imgSrc={hotel.imgSrc} 
             imgAlt={hotel.imgAlt} 
-            city={hotel.city} 
-            buttonText={hotel.buttonText} 
+            hotel_name={hotel.hotel_name} 
+            buttonText={hotel.buttonText}
+            onClick={() => navigate('/guest')}  
           />
         ))}
       </div>
