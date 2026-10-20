@@ -2,8 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { type PayloadAction } from "@reduxjs/toolkit";
 import { type OAuthUser } from "./registerSlice"
 
+
 interface LoginState {
     currentUser: OAuthUser | null;
+    token: string | null;
     emailInput: string;
     passwordInput: string;
     isLoading: boolean;
@@ -11,8 +13,11 @@ interface LoginState {
     isAuthenticated: boolean;
 }
 
+const token = localStorage.getItem("token")
+
 const initialState: LoginState = {
     currentUser: null,
+    token: token,
     emailInput: "",
     passwordInput: "",
     isLoading: false,
@@ -49,7 +54,7 @@ export const LoginThunk = createAsyncThunk(
 
             localStorage.setItem("Token",data.token);
             
-            return data;
+            return data.user || data;
         } catch (error) {
             return rejectWithValue(
                 error instanceof Error ? error.message : "An unknown error occurred",

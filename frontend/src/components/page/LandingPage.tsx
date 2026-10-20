@@ -16,12 +16,12 @@ const LandingPage = () => {
 const navigate = useNavigate()
 
   const hotelData = [
-    { id: 1, imgSrc: hotelP, imgAlt: 'Durban Hotel', hotel_name: 'Boutique hotel', buttonText: 'View More' },
-    { id: 2, imgSrc: hotelpP, imgAlt: 'Cape Town Hotel', hotel_name: 'Bon hotel', buttonText: 'View More' },
-    { id: 3, imgSrc: Bon, imgAlt: 'Johannesburg Hotel', hotel_name: 'Luxuries hotel', buttonText: 'View More' },
-    { id: 4, imgSrc: Boutique, imgAlt: 'Pretoria Hotel', hotel_name: 'Orchid hotel', buttonText: 'View More' },
-    { id: 5, imgSrc: Luxuries, imgAlt: 'Gqeberha Hotel', hotel_name: 'Brittanica hotel', buttonText: 'View More' },
-    { id: 6, imgSrc: images, imgAlt: 'Bloemfontein Hotel', hotel_name: 'Bayside hotel', buttonText: 'View More' },
+    { id: 1, imgSrc: hotelP, imgAlt: 'Durban Hotel', hotel_name: 'Boutique hotel',Province:'KwaZulu-Natal', buttonText: 'View More' },
+    { id: 2, imgSrc: hotelpP, imgAlt: 'Cape Town Hotel', hotel_name: 'Bon hotel',Province:'Ghauteng', buttonText: 'View More' },
+    { id: 3, imgSrc: Bon, imgAlt: 'Johannesburg Hotel', hotel_name: 'Luxuries hotel',Province:'Pritoria', buttonText: 'View More' },
+    { id: 4, imgSrc: Boutique, imgAlt: 'Pretoria Hotel', hotel_name: 'Orchid hotel', Province:'Johannesburg',buttonText: 'View More' },
+    { id: 5, imgSrc: Luxuries, imgAlt: 'Gqeberha Hotel', hotel_name: 'Brittanica hotel',Province:'Cape Town', buttonText: 'View More' },
+    { id: 6, imgSrc: images, imgAlt: 'Bloemfontein Hotel', hotel_name: 'Bayside hotel',Province:'Eastern Cape', buttonText: 'View More' },
   ];
   return (
     <div>
@@ -35,6 +35,7 @@ const navigate = useNavigate()
             imgAlt={hotel.imgAlt} 
             hotel_name={hotel.hotel_name} 
             buttonText={hotel.buttonText}
+            Province={hotel.Province}
             onClick={() => navigate('/guest')}  
           />
         ))}

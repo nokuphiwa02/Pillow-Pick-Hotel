@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../store'; 
 import { createHotel, fetchHotels, deleteHotelById, updateHotelById } from '../../redux/HotelSlice';
-import styles from './AdminPage.module.css';
+import styles from './Accomodation.module.css';
 
-export const AdminPage: React.FC = () => {
+export const AccommodationsView: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { hotels, loading, error } = useSelector((state: RootState) => state.hotels);
 
@@ -84,7 +84,7 @@ export const AdminPage: React.FC = () => {
       {error && <p className={styles.errorMessage}>Error: {error}</p>}
 
       <div className={styles.formWrapper}>
-        {/* Dynamic header title based on edit mode */}
+      
         <h3 className={styles.formTitle}>
           {editingHotelId !== null ? 'Edit Existing Hotel' : 'Add New Hotel'}
         </h3>
@@ -106,7 +106,7 @@ export const AdminPage: React.FC = () => {
             required 
           />
           <input 
-            type="text" 
+            type="text"  
             placeholder="City" 
             value={city} 
             onChange={(e) => setCity(e.target.value)} 
@@ -216,4 +216,4 @@ export const AdminPage: React.FC = () => {
   );
 };
 
-export default AdminPage;
+export default AccommodationsView;

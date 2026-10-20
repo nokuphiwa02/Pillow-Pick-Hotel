@@ -16,7 +16,7 @@ export const LoginForm = () => {
   const { error, isLoading } = useSelector((state: RootState) => state.signIn);
 
   const signUp = () => {
-    navigate("/register");
+    navigate("/dashboard");
   };
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {

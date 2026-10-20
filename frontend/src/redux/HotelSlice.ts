@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import type { RootState } from '../../store';
 
 export interface Hotel {
   id: number;
@@ -24,18 +25,24 @@ const initialState: HotelState = {
   error: null,
 };
 
-const API_URL = 'http://localhost:5000/api/hotels'; 
+const API_URL = '/api/hotels'; 
 
 
 export const createHotel = createAsyncThunk(
   'hotels/createHotel',
   async (hotelData: any, { rejectWithValue }) => {
     try {
+    //  const state = getState() as RootState
+    //  const userToken = state.signIn.token
+
       const token = localStorage.getItem('Token'); 
+
+
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
          body: JSON.stringify(hotelData),
       });

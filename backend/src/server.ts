@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from "cors"
+import path from 'path'; 
 import { testDbConnection } from './config/database';
 import { createOAuthUserTable } from './service/oAuthoService';
 import oAuthoRoutes from './routes/oAuthoRoutes';
@@ -8,12 +9,14 @@ import hotelRoutes from './routes/hotelRoutes';
 import roomRoutes from './routes/roomRoutes';
 import bookingRoutes from './routes/bookingRoutes';
 import reviewRoutes from './routes/reviewRoutes';
-import favouriteRoutes from './routes/favouriteRoutes'
+import favouriteRoutes from './routes/favouriteRoutes';
+import hotelImageRoutes from './routes/hotelImageRoutes'
 import { createHotelsTable } from './service/hotelService'
 import { createRoomsTable } from './service/roomService';
 import { createBookingTables } from './service/bookingService';
 import { createReviewsTable } from './service/reviewService';
 import { createFavourateTable } from './service/favouriteService';
+import { createHotelImageTable } from './service/hotelImageService';
 
 
 dotenv.config();
@@ -25,6 +28,8 @@ const startServer = async () => {
   app.use(express.json());
   app.use(cors())
 
+  app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
   await testDbConnection();
 
   const creatingTables = async () => {
@@ -34,6 +39,7 @@ const startServer = async () => {
     await createBookingTables();
     await createReviewsTable();
     await createFavourateTable();
+    await createHotelImageTable();
 
 
 
@@ -46,6 +52,7 @@ const startServer = async () => {
   app.use("/api",bookingRoutes);
   app.use("/api", reviewRoutes);
   app.use("/api", favouriteRoutes);
+  app.use("/api",hotelImageRoutes)
  
 
 
