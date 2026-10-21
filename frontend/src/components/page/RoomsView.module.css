@@ -1,0 +1,181 @@
+
+.rooms-page {
+  min-height: 100vh;
+  padding: 30px;
+  background-color: #a3d9c9;
+  color: #228b22;
+  box-sizing: border-box;
+}
+
+/* Page heading */
+.rooms-page h2 {
+  margin-bottom: 25px;
+  font-size: 28px;
+  color: #228b22;
+}
+
+/* Buttons */
+.btn-primary,
+.rooms-page button[type="submit"] {
+  padding: 12px 22px;
+  background-color: #228b22;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover,
+.rooms-page button[type="submit"]:hover {
+  background-color: #196b19;
+}
+
+.rooms-page button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Create Room form */
+.rooms-page form {
+  width: 100%;
+  max-width: 650px;
+  margin: 25px 0;
+  padding: 30px;
+  background-color: #ffffff;
+  border: 2px solid #228b22;
+  border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Form heading */
+.rooms-page form h3 {
+  margin: 0 0 18px;
+  color: #228b22;
+  font-size: 22px;
+}
+
+/* Labels */
+.rooms-page form label {
+  display: block;
+  margin-top: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #228b22;
+}
+
+/* Inputs, dropdown and textarea */
+.rooms-page form input,
+.rooms-page form select,
+.rooms-page form textarea {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 12px;
+  margin: 0 0 8px;
+  border: 1px solid #b8cbbf;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #333333;
+  font-size: 15px;
+  font-family: inherit;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.rooms-page form input:focus,
+.rooms-page form select:focus,
+.rooms-page form textarea:focus {
+  border-color: #228b22;
+  box-shadow: 0 0 0 3px rgba(34, 139, 34, 0.12);
+}
+
+.rooms-page form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* Save button */
+.rooms-page form button[type="submit"] {
+  width: 100%;
+  margin-top: 12px;
+  min-height: 46px;
+}
+
+/* Success and error messages */
+.rooms-page p[role="alert"] {
+  padding: 12px;
+  margin: 15px 0;
+  color: #a32222;
+  background-color: #fff0f0;
+  border-radius: 6px;
+}
+
+.rooms-page p[role="status"] {
+  padding: 12px;
+  margin: 15px 0;
+  color: #196b19;
+  background-color: #ffffff;
+  border-radius: 6px;
+}
+
+/* Room filters */
+.rooms-page > div[style] {
+  align-items: center;
+}
+
+.rooms-page > div[style] button {
+  min-width: 120px;
+}
+
+/* Rooms table */
+.data-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.data-table th,
+.data-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #e2eee7;
+}
+
+.data-table th {
+  background-color: #228b22;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.data-table tbody tr:hover {
+  background-color: #f0faf5;
+}
+
+/* Availability badges */
+.badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.badge.available {
+  background-color: #d9f2df;
+  color: #196b19;
+}
+
+.badge.unavailable {
+  background-color: #ffe1e1;
+  color: #a32222;
+}
