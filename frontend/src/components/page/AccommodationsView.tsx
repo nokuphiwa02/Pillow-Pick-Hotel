@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../store'; 
 import { createHotel, fetchHotels, deleteHotelById, updateHotelById } from '../../redux/HotelSlice';
 import styles from './Accomodation.module.css';
+import { addHotelImage } from '../../redux/ImageSlice';
 
 export const AccommodationsView: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { hotels, loading, error } = useSelector((state: RootState) => state.hotels);
+  const[imagePreview, setImagePreview] = useState("")
 
   const [hotelName, setHotelName] = useState('');
   const [address, setAddress] = useState('');
@@ -21,11 +23,6 @@ export const AccommodationsView: React.FC = () => {
     dispatch(fetchHotels());
   }, [dispatch]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImageFile(e.target.files[0]);
-    }
-  };
 
   const resetFormFields = () => {
     setHotelName('');
@@ -37,29 +34,68 @@ export const AccommodationsView: React.FC = () => {
     setEditingHotelId(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
 
-    const formData = new FormData();
-    formData.append('hotel_name', hotelName);
-    formData.append('address', address);
-    formData.append('city', city);
-    formData.append('rating', rating.toString());
-    formData.append('description', description);
-    if (imageFile) {
-      formData.append('image', imageFile);
-    }
+    if (!file) return;
 
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file))
+  }
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const formData = new FormData();
+  formData.append('hotel_name', hotelName);
+  formData.append('address', address);
+  formData.append('city', city);
+  formData.append('rating', rating.toString());
+  formData.append('description', description);
+
+  try {
     if (editingHotelId !== null) {
-      dispatch(updateHotelById({ id: editingHotelId, hotelData: formData })).then(() => {
-        resetFormFields();
-      });
+      const result = await dispatch(
+        updateHotelById({
+          id: editingHotelId,
+          hotelData: formData,
+        })
+      ).unwrap();
+
+      if (imageFile) {
+        await dispatch(
+          addHotelImage({
+            hotel_id: result.id,
+            is_primary: true,
+            pictures: [imageFile],
+          })
+        ).unwrap();
+      }
     } else {
-      dispatch(createHotel(formData)).then(() => {
-        resetFormFields();
-      });
+      const result = await dispatch(createHotel(formData)).unwrap();
+
+      if (imageFile) {
+        await dispatch(
+          addHotelImage({
+            hotel_id: result.id,
+            is_primary: true,
+            pictures: [imageFile],
+          })
+        ).unwrap();
+      }
     }
-  };
+
+    await dispatch(fetchHotels()).unwrap();
+    resetFormFields();
+    setImagePreview('');
+  } catch (error) {
+    console.error('Failed to save hotel or upload image:', error);
+  }
+};
+
+  
+
+  
 
   const handleDelete = (id: number) => {
     if (window.confirm('Are you sure you want to delete this hotel?')) {
@@ -115,7 +151,7 @@ export const AccommodationsView: React.FC = () => {
           />
           
           <label className={styles.labelGroup}>
-            Rating (1-7):
+            Rating (1-5):
             <input 
               type="number" 
               min="1" 
@@ -141,9 +177,14 @@ export const AccommodationsView: React.FC = () => {
             <input 
               type="file" 
               accept="image/*" 
-              onChange={handleFileChange} 
-              required={editingHotelId === null} // Image is optional during editing
+              onChange={handleImageChange} 
+              required={editingHotelId === null} 
             />
+           {imagePreview && (
+            <img
+            src= {imagePreview}
+            />
+           )}
           </label>
 
           {/* Action buttons with flex-gap mapping to prevent stacking issues */}
