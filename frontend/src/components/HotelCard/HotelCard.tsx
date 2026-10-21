@@ -1,29 +1,54 @@
-import React from 'react'
-import styles from '../HotelCard/HotelCard.module.css'
-import { useNavigate } from 'react-router-dom'
+
+import { useState } from "react";
+import styles from "../HotelCard/HotelCard.module.css";
 
 type HotelCardProps = {
-  imgSrc: string
-  imgAlt: string
-  hotel_name: string
-  buttonText: string 
-  Province: string
-  onClick : () => void
-}
+  imgSrc: string;
+  imgAlt: string;
+  hotel_name: string;
+  buttonText: string;
+  Province: string;
+  onClick: () => void;
+};
 
-export const HotelCard = ({ imgSrc, imgAlt, hotel_name, buttonText,Province,onClick }: HotelCardProps) => {
-  
-  
+const FALLBACK_IMAGE = "/assets/fallback-hotel.jpg";
+
+const HotelCard = ({
+  imgSrc,
+  imgAlt,
+  hotel_name,
+  buttonText,
+  Province,
+  onClick,
+}: HotelCardProps) => {
+  const [imageSrc, setImageSrc] = useState(imgSrc);
 
   return (
-    <div className={styles.cardContainer}>
-      <img src={imgSrc} alt={imgAlt} className={styles.htlImg}/>
+    <article className={styles.cardContainer}>
+      <img
+        src={imageSrc}
+        alt={imgAlt}
+        className={styles.htlImg}
+        onError={() => {
+          if (imageSrc !== FALLBACK_IMAGE) {
+            setImageSrc(FALLBACK_IMAGE);
+          }
+        }}
+      />
+
       <h2 className={styles.topic}>{hotel_name}</h2>
-      <p>{Province}</p>
-      <button className={styles.cardBtn} onClick={onClick}>{buttonText}</button>
-     </div>
-     
-  )
-}
+
+      <p className={styles.province}>{Province}</p>
+
+      <button
+        type="button"
+        className={styles.cardBtn}
+        onClick={onClick}
+      >
+        {buttonText}
+      </button>
+    </article>
+  );
+};
 
 export default HotelCard;
