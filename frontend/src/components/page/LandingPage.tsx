@@ -1,52 +1,107 @@
 
-import styles from "../page/LandingPage.module.css";
-import   Navbar  from '../navbar/navbar';
-import Hero from '../Hero/Hero';
-import HotelCard from '../HotelCard/HotelCard';
-import hotelP from '../../assets/hotelpP.jpg'
-import hotelpP from '../../assets/hotelpP.jpg'
-import Bon from '../../assets/Bon.jpg'
-import Boutique from '../../assets/Boutique.jpg'
-import Luxuries from '../../assets/Luxuries.jpg'
-import images from '../../assets/images.jpg'
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "../../../store";
 
+import { fetchHotels } from "../../redux/HotelSlice";
+import { getAllImages } from "../../redux/ImageSlice";
+
+import styles from "../page/LandingPage.module.css";
+import Navbar from "../navbar/navbar";
+import Hero from "../Hero/Hero";
+import HotelCard from "../HotelCard/HotelCard";
+
+// Change this if your backend uses a different port.
+const API_BASE_URL = "http://localhost:5000";
+
+const getImageUrl = (imagePath?: string): string => {
+  if (!imagePath) {
+    return "/assets/fallback-hotel.jpg";
+  }
+
+  // Keep external URLs unchanged.
+  if (/^(https?:\/\/|data:)/i.test(imagePath)) {
+    return imagePath;
+  }
+
+  // Convert Windows backslashes into URL slashes.
+  const path = imagePath.replace(/\\/g, "/");
+
+  // Avoid duplicating the backend URL.
+  return `${API_BASE_URL}/${path.replace(/^\/+/, "")}`;
+};
 
 const LandingPage = () => {
-const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const hotelData = [
-    { id: 1, imgSrc: hotelP, imgAlt: 'Durban Hotel', hotel_name: 'Boutique hotel',Province:'KwaZulu-Natal', buttonText: 'View More' },
-    { id: 2, imgSrc: hotelpP, imgAlt: 'Cape Town Hotel', hotel_name: 'Bon hotel',Province:'Ghauteng', buttonText: 'View More' },
-    { id: 3, imgSrc: Bon, imgAlt: 'Johannesburg Hotel', hotel_name: 'Luxuries hotel',Province:'Pritoria', buttonText: 'View More' },
-    { id: 4, imgSrc: Boutique, imgAlt: 'Pretoria Hotel', hotel_name: 'Orchid hotel', Province:'Johannesburg',buttonText: 'View More' },
-    { id: 5, imgSrc: Luxuries, imgAlt: 'Gqeberha Hotel', hotel_name: 'Brittanica hotel',Province:'Cape Town', buttonText: 'View More' },
-    { id: 6, imgSrc: images, imgAlt: 'Bloemfontein Hotel', hotel_name: 'Bayside hotel',Province:'Eastern Cape', buttonText: 'View More' },
-  ];
+  const { hotels, loading: hotelsLoading, error: hotelsError } =
+    useSelector((state: RootState) => state.hotels);
+
+  const { images, loading: imagesLoading, error: imagesError } =
+    useSelector((state: RootState) => state.images);
+
+  useEffect(() => {
+    dispatch(fetchHotels());
+    dispatch(getAllImages());
+  }, [dispatch]);
+
+  const loading = hotelsLoading || imagesLoading;
+  const error = hotelsError || imagesError;
+
   return (
     <div>
-      <Navbar/>
-      <Hero/>
-      <div className={styles.cardGrid}> 
-        {hotelData.map((hotel) => (
-          <HotelCard 
-            key={hotel.id} 
-            imgSrc={hotel.imgSrc} 
-            imgAlt={hotel.imgAlt} 
-            hotel_name={hotel.hotel_name} 
-            buttonText={hotel.buttonText}
-            Province={hotel.Province}
-            onClick={() => navigate('/guest')}  
-          />
-        ))}
-      </div>
+      <Navbar />
+      <Hero />
+
+      <main className={styles.cardGrid}>
+        {loading && (
+          <p className={styles.statusText}>
+            Loading hotels and images...
+          </p>
+        )}
+
+        {error && (
+          <p className={styles.errorText}>
+            Unable to load hotels or images: {error}
+          </p>
+        )}
+
+        {!loading && !error && hotels.length === 0 && (
+          <p className={styles.statusText}>
+            No hotels available at the moment.
+          </p>
+        )}
+
+        {!loading && !error && hotels.map((hotel) => {
+          const hotelImages = images.filter(
+            (image) => image.hotel_id === hotel.id
+          );
+
+          const selectedImage =
+            hotelImages.find((image) => image.is_primary) ??
+            hotelImages[0];
+
+          // Support both the separate image table and older hotel records.
+          const imagePath =
+            selectedImage?.img_url || hotel.image_url;
+
+          return (
+            <HotelCard
+              key={hotel.id}
+              imgSrc={getImageUrl(imagePath)}
+              imgAlt={`${hotel.hotel_name} hotel`}
+              hotel_name={hotel.hotel_name}
+             Province={hotel.city}
+              buttonText="View More"
+              onClick={() => navigate(`/guest/${hotel.id}`)}
+            />
+          );
+        })}
+      </main>
     </div>
-  )
-}
+  );
+};
 
 export default LandingPage;
-
-
-
-
-
