@@ -41,10 +41,9 @@ export const createHotel = createAsyncThunk(
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
-         body: JSON.stringify(hotelData),
+         body: hotelData,
       });
 
       if (!response.ok) {
@@ -96,9 +95,8 @@ export const updateHotelById = createAsyncThunk(
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json', 
         },
-        body: JSON.stringify(hotelData), 
+        body: hotelData, 
       });
 
       if (!response.ok) {
