@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { OverviewView } from '../page/OverviewView';
 import { AccommodationsView } from '../page/AccommodationsView';
-// import { RoomsView } from '../page/RoomsView';
+import { RoomsView } from '../page/RoomsView';
 // import { BookingsView } from '../page/BookingsView';
 import styles from './AdminDashboard.module.css';
 
@@ -25,8 +25,8 @@ export const AdminDashboard: React.FC = () => {
         return <OverviewView setView={setCurrentView} stats={stats} />;
       case 'accommodations':
         return <AccommodationsView />;
-    //   case 'rooms':
-    //     return <RoomsView />;
+      case 'rooms':
+        return <RoomsView />;
     //   case 'bookings':
     //     return <BookingsView />;
     //   case 'users':
