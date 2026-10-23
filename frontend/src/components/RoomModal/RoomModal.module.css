@@ -1,0 +1,473 @@
+
+/* =========================
+   ROOM MODAL OVERLAY
+========================= */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 24px;
+  background: rgba(13, 35, 25, 0.65);
+  backdrop-filter: blur(4px);
+}
+
+/* Modal Card */
+.modalContent {
+  width: 100%;
+  max-width: 760px;
+  max-height: 90vh;
+  box-sizing: border-box;
+  margin: auto;
+  padding: 30px;
+  overflow-y: auto;
+  border: 1px solid #e1ebe4;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 24px 65px rgba(0, 0, 0, 0.25);
+}
+
+/* Modal Header */
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 26px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e5eee8;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  color: #174d35;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+/* Close Button */
+.modalClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: #edf5ef;
+  color: #315b45;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.modalClose:hover {
+  background: #176b46;
+  color: #ffffff;
+}
+
+/* Form */
+.roomForm {
+  width: 100%;
+}
+
+.modalFormGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px 20px;
+}
+
+.modalField,
+.modalFullField {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.modalFullField {
+  grid-column: 1 / -1;
+}
+
+/* Labels */
+.modalField label,
+.modalFullField label {
+  color: #315b45;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Inputs and Select */
+.modalField input,
+.modalField select,
+.modalFullField textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border: 1px solid #d3e1d8;
+  border-radius: 9px;
+  background: #fbfdfb;
+  color: #243b30;
+  font-family: inherit;
+  font-size: 15px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modalField input,
+.modalField select {
+  min-height: 48px;
+}
+
+.modalField input:focus,
+.modalField select:focus,
+.modalFullField textarea:focus {
+  outline: none;
+  border-color: #258052;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 128, 82, 0.12);
+}
+
+.modalField input::placeholder,
+.modalFullField textarea::placeholder {
+  color: #8a9990;
+}
+
+.modalFullField textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* Footer Actions */
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #e5eee8;
+}
+
+.cancelButton,
+.primaryButton {
+  min-width: 125px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.cancelButton {
+  border: 1px solid #d5e1d8;
+  background: #f1f5f2;
+  color: #40594a;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: #e2ebe5;
+}
+
+.primaryButton {
+  background: #176b46;
+  color: #ffffff;
+}
+
+.primaryButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #105337;
+}
+
+.cancelButton:disabled,
+.primaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Modal Responsive */
+@media (max-width: 600px) {
+  .modalOverlay {
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .modalContent {
+    max-height: 94vh;
+    margin: auto 0;
+    padding: 22px 17px;
+    border-radius: 14px;
+  }
+
+  .modalHeader {
+    margin-bottom: 22px;
+  }
+
+  .modalHeader h2 {
+    font-size: 21px;
+  }
+
+  .modalFormGrid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .modalActions {
+    flex-direction: column-reverse;
+  }
+
+  .cancelButton,
+  .primaryButton {
+    width: 100%;
+  }
+}
+
+/* =========================
+   ROOMS DIRECTORY PAGE
+========================= */
+.roomsPage {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 36px 32px;
+  background: #f3f8f5;
+  color: #243b30;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Page Heading */
+.roomsPageHeader {
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.roomsPageHeader h1 {
+  margin: 0 0 10px;
+  color: #174d35;
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 800;
+}
+
+.roomsPageHeader p {
+  margin: 0 0 22px;
+  color: #718178;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Create Room Button */
+.createRoomButton {
+  padding: 13px 24px;
+  border: none;
+  border-radius: 9px;
+  background: #176b46;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(23, 107, 70, 0.15);
+  transition: 0.2s ease;
+}
+
+.createRoomButton:hover {
+  transform: translateY(-2px);
+  background: #105337;
+}
+
+/* Filter Buttons */
+.roomFilters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.roomFilterButton {
+  padding: 10px 18px;
+  border: 1px solid #cbdcd1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #315b45;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.roomFilterButton:hover {
+  border-color: #176b46;
+  background: #eaf5ee;
+}
+
+.roomFilterButton.active {
+  border-color: #176b46;
+  background: #176b46;
+  color: #ffffff;
+}
+
+/* Table Container */
+.roomsDirectoryWrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e0ebe3;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 8px 26px rgba(23, 77, 53, 0.07);
+}
+
+/* Rooms Table */
+.roomsDirectoryTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+}
+
+.roomsDirectoryTable th {
+  padding: 16px 15px;
+  background: #176b46;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.roomsDirectoryTable th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.roomsDirectoryTable th:last-child {
+  border-top-right-radius: 12px;
+}
+
+.roomsDirectoryTable td {
+  padding: 16px 15px;
+  border-bottom: 1px solid #e8efeb;
+  color: #40584a;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.roomsDirectoryTable tbody tr {
+  transition: background 0.2s ease;
+}
+
+.roomsDirectoryTable tbody tr:hover {
+  background: #f0f8f3;
+}
+
+.roomsDirectoryTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Availability Labels */
+.roomAvailable,
+.roomUnavailable {
+  display: inline-block;
+  padding: 6px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.roomAvailable {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.roomUnavailable {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Table Action Buttons */
+.roomActionButtons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.roomEditButton,
+.roomDeleteButton {
+  padding: 9px 13px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.roomEditButton {
+  border-color: #176b46;
+  background: #e5f4e9;
+  color: #176b46;
+}
+
+.roomEditButton:hover {
+  background: #cce9d6;
+}
+
+.roomDeleteButton {
+  border-color: #e2b6b6;
+  background: #fff1f1;
+  color: #bd3030;
+}
+
+.roomDeleteButton:hover {
+  background: #ffe0e0;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+  .roomsPage {
+    padding: 24px 14px;
+  }
+
+  .roomsDirectoryTable th,
+  .roomsDirectoryTable td {
+    padding: 12px 10px;
+  }
+
+  .roomActionButtons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .roomEditButton,
+  .roomDeleteButton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .roomsPage {
+    padding: 18px 10px;
+  }
+
+  .roomsPageHeader h1 {
+    font-size: 24px;
+  }
+
+  .roomsPageHeader p {
+    font-size: 14px;
+  }
+
+  .createRoomButton {
+    width: 100%;
+  }
+
+  .roomsDirectoryTable th,
+  .roomsDirectoryTable td {
+    padding: 10px 9px;
+    font-size: 12px;
+  }
+}
