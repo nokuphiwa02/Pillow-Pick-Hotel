@@ -1,0 +1,239 @@
+
+/* Dark overlay behind the modal */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 24px;
+  background: rgba(12, 35, 24, 0.62);
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+}
+
+/* Modal card */
+.modalContent {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  box-sizing: border-box;
+  margin: auto;
+  padding: 28px;
+  overflow-y: auto;
+  border: 1px solid #e1ebe4;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24);
+}
+
+/* Header */
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 26px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e6eee8;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  color: #174d35;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+/* Close button */
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: #edf5ef;
+  color: #315b45;
+  font-size: 25px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.closeButton:hover {
+  background: #176b46;
+  color: #ffffff;
+}
+
+/* Form layout */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Inputs and textarea */
+.inputField,
+.textareaField {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 15px;
+  border: 1px solid #d4e1d8;
+  border-radius: 9px;
+  outline: none;
+  background: #fbfdfb;
+  color: #263b30;
+  font-family: inherit;
+  font-size: 15px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inputField::placeholder,
+.textareaField::placeholder {
+  color: #8a9990;
+}
+
+.inputField:focus,
+.textareaField:focus {
+  border-color: #258052;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 128, 82, 0.12);
+}
+
+.textareaField {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* Labels */
+.labelGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #315b45;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* File input */
+.labelGroup input[type="file"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px dashed #b9cfc0;
+  border-radius: 9px;
+  background: #f7faf8;
+  color: #40594a;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.labelGroup input[type="file"]::file-selector-button {
+  margin-right: 12px;
+  padding: 9px 13px;
+  border: none;
+  border-radius: 6px;
+  background: #e1f0e6;
+  color: #176b46;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Image preview */
+.imagePreview {
+  display: block;
+  width: 120px;
+  height: 100px;
+  margin-top: 10px;
+  border: 1px solid #dce8df;
+  border-radius: 10px;
+  background: #f5f8f5;
+  object-fit: cover;
+}
+
+/* Action buttons */
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.submitButton,
+.cancelButton {
+  flex: 1;
+  min-height: 46px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.submitButton {
+  background: #176b46;
+  color: #ffffff;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #105337;
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  border: 1px solid #d5e1d8;
+  background: #f1f5f2;
+  color: #40594a;
+}
+
+.cancelButton:hover {
+  background: #e2ebe5;
+}
+
+/* Smaller screens */
+@media (max-width: 600px) {
+  .modalOverlay {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .modalContent {
+    max-height: 94vh;
+    margin: auto 0;
+    padding: 21px 17px;
+    border-radius: 14px;
+  }
+
+  .modalHeader {
+    margin-bottom: 20px;
+  }
+
+  .modalHeader h2 {
+    font-size: 21px;
+  }
+
+  .form {
+    gap: 15px;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+  }
+
+  .submitButton,
+  .cancelButton {
+    width: 100%;
+  }
+}
