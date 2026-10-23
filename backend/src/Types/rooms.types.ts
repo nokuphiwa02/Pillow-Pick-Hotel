@@ -9,6 +9,7 @@ export interface Rooms {
     capacity: number;
     quantity: number;
     description: string;
+    facilities : string;
     price_per_night: number;
     createdAt_at:Date;
 }

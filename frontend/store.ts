@@ -3,6 +3,7 @@ import registerReducer  from './src/redux/registerSlice'
 import loginReducer from './src/redux/LoginSlice'
 import hotelReducer from './src/redux/HotelSlice'
 import imageReducer from './src/redux/ImageSlice'
+import roomReducer from './src/redux/RoomSlice'
 
 
 
@@ -11,7 +12,8 @@ export const store = configureStore({
     signUp: registerReducer,
     signIn: loginReducer,
     hotels: hotelReducer,
-    images:imageReducer
+    images:imageReducer,
+    rooms: roomReducer,
    
 }
 })

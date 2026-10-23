@@ -69,9 +69,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const getUserById = async(req: Request, res:Response) => {
     try{
-        if(req.user!.role !== 'guest'){
-        return res.status(403).json({ message: "Only guest can get users by Id" })
-        }
+      
        const id = parseInt(req.params.id as string);
        const user = await oAuthoService.findUserById(id)
 
