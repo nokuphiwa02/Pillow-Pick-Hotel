@@ -3,10 +3,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../../store";
-
 import { fetchHotels } from "../../redux/HotelSlice";
 import { getAllImages } from "../../redux/ImageSlice";
-
 import styles from "../page/LandingPage.module.css";
 import Navbar from "../navbar/navbar";
 import Hero from "../Hero/Hero";
@@ -89,14 +87,14 @@ const LandingPage = () => {
 
           return (
             <HotelCard
-              key={hotel.id}
-              imgSrc={getImageUrl(imagePath)}
-              imgAlt={`${hotel.hotel_name} hotel`}
-              hotel_name={hotel.hotel_name}
-             Province={hotel.city}
-              buttonText="View More"
-              onClick={() => navigate(`/guest/${hotel.id}`)}
-            />
+            key={hotel.id}
+            imgSrc={getImageUrl(imagePath)}
+            imgAlt={`${hotel.hotel_name} hotel`}
+            hotel_name={hotel.hotel_name}
+            Province={hotel.city}
+            buttonText="View More"
+            onClick={() => navigate(`/hotels/${hotel.id}`)}
+          />
           );
         })}
       </main>
