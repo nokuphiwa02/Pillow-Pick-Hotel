@@ -3,7 +3,17 @@ import * as bookingService from "../service/bookingService"
 
 export const addBooking = async (req: Request, res:Response) => {
         try{
-            const newBookings = await bookingService.createBookings(req.body);
+             const user = req.user; 
+
+        if (!user) {
+            return res.status(401).json({ message: "You must be logged in to book a room" });
+        }
+
+        const bookingData = {
+            ...req.body,
+            user_id: user.id 
+        };
+            const newBookings = await bookingService.createBookings(bookingData);
             res.status(201).json(newBookings);
             }catch(error){
                 console.error("Error creating bookings:", error);
