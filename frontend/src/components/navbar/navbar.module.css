@@ -1,47 +1,126 @@
+
 .container {
-  background-color: #2C5E43; 
-  padding: 10px 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 88%;
+  max-width: 1450px;
+  padding: 0;
+  box-sizing: border-box;
+  z-index: 10;
 }
 
 .navbarContent {
-  background-color: #DFF8EE; 
+  width: 100%;
+  min-height: 76px;
+  padding: 12px 24px;
+  margin: 0;
+  box-sizing: border-box;
+
   display: flex;
   align-items: center;
-  width: 100%;
-  max-width: 1200px;
-  padding: 12px 24px;
-  border-radius: 8px; 
-  gap: 15px;
+  justify-content: space-between;
+  gap: 24px;
+
+  background-color: #D8B975;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
 }
 
 .icon {
-  width: 40px;
-  height: auto;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
+  border-radius: 50%;
 }
 
 .tittle {
-  color: #133824; 
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-right: auto; 
+  color: #123B2B;
+  font-size: 1.7rem;
+  font-weight: 750;
+  margin: 0;
+  white-space: nowrap;
 }
 
-.regBtn, .lgnbtn {
-  width: 55px;
-  background-color: #2C5E43; 
-  color: #FFFFFF; 
-  text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 4px;
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+.regBtn,
+.lgnbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 100px;
+  padding: 12px 22px;
+
+  background-color: #123B2B;
+  color: #D8B975;
+  border: 1px solid #123B2B;
+  border-radius: 8px;
+
+  font-size: 0.95rem;
   font-weight: 600;
-  transition: background-color 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition: all 0.25s ease;
 }
 
-.regBtn:hover, .lgnbtn:hover {
-  background-color: #1d3f2d; 
+.regBtn:hover,
+.lgnbtn:hover {
+  background-color: #FFFFFF;
+  color: #123B2B;
+  border-color: #FFFFFF;
+  transform: translateY(-2px);
 }
 
+@media (max-width: 600px) {
+  .container {
+    top: 12px;
+    width: 94%;
+  }
+
+  .navbarContent {
+    min-height: 64px;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .brand {
+    gap: 7px;
+  }
+
+  .icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .tittle {
+    font-size: 1.15rem;
+  }
+
+  .navActions {
+    gap: 6px;
+  }
+
+  .regBtn,
+  .lgnbtn {
+    min-width: 0;
+    padding: 9px 10px;
+    font-size: 0.78rem;
+  }
+}
