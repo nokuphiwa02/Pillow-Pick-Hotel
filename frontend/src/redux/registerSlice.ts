@@ -3,14 +3,13 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 
-
-
 export interface OAuthUser {
   id: string;
   password: string;
   email: string;
   name: string;
   phone: number;
+  role?: "admin" | "guest";
 }
 
 interface UserState extends OAuthUser {

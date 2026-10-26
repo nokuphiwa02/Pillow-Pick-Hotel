@@ -11,6 +11,7 @@ export interface Room {
   description: string;
   facilities: string;
   price_per_night: number;
+  image: string[];
 }
 
 interface RoomState {
@@ -55,23 +56,23 @@ const getErrorMessage = async (
 
 type CreateRoomPayload = Omit<Room, "id">;
 
+
 export const createRoom = createAsyncThunk<
   Room,
-  CreateRoomPayload,
+  FormData,
   { rejectValue: string }
 >(
   "rooms/createRoom",
-  async (roomData, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("Token");
 
       const response = await fetch("/api/rooms", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify(roomData),
+        body: formData,
       });
 
       if (!response.ok) {
