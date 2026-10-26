@@ -8,6 +8,7 @@ import styles from './AdminDashboard.module.css';
 import type { RootState, AppDispatch } from '../../../store';
 import { fetchHotels } from '../../redux/HotelSlice';
 import { fetchRooms } from '../../redux/RoomSlice';
+import { fetchBookings } from '../../redux/BookingSlice';
 
 type DashboardView =
   | 'overview'
@@ -30,11 +31,25 @@ export const AdminDashboard: React.FC = () => {
   const rooms = useSelector(
     (state: RootState) => state.rooms.rooms
   );
+   
+   const bookings = useSelector(
+    (state: RootState) => state.bookings.bookings
+  );
+
+  const bookingsLoading = useSelector(
+    (state: RootState) => state.bookings.loading
+  );
+
+  const bookingsError = useSelector(
+    (state: RootState) => state.bookings.error
+  );
+
 
   // Fetch the latest records when the dashboard loads
   useEffect(() => {
     dispatch(fetchHotels());
     dispatch(fetchRooms());
+    dispatch(fetchBookings());
   }, [dispatch]);
 
   const stats = [
@@ -101,9 +116,74 @@ export const AdminDashboard: React.FC = () => {
       case 'bookings':
         return (
           <section className={styles.pageContent}>
-            <h2>📅 Bookings Record</h2>
-            <p>View and manage your bookings here.</p>
+            <h2>📅 Bookings Records</h2>
+            <p className={styles.pageDescription}>
+              View and manage customer bookings.
+            </p>
+
+            {bookingsLoading && (
+              <p>Loading bookings...</p>
+            )}
+
+            {bookingsError && (
+              <p role="alert">
+                Failed to load bookings: {bookingsError}
+              </p>
+            )}
+
+            {!bookingsLoading &&
+              !bookingsError &&
+              bookings.length === 0 && (
+                <p>No bookings found.</p>
+              )}
+
+            {bookings.length > 0 && (
+              <div className={styles.tableWrapper}>
+                <table className={styles.dataTable}>
+                  <thead>
+                    <tr>
+                      <th>Booking ID</th>
+                      <th>User ID</th>
+                      <th>Room ID</th>
+                      <th>Check-in</th>
+                      <th>Check-out</th>
+                      <th>Guests</th>
+                      <th>Total Price</th>
+                      <th>Status</th>
+                      <th>Created At</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {bookings.map((booking) => (
+                      <tr key={booking.id}>
+                        <td>{booking.id}</td>
+                        <td>{booking.user_id}</td>
+                        <td>{booking.room_id}</td>
+                        <td>
+                          {String(booking.check_in).slice(0, 10)}
+                        </td>
+                        <td>
+                          {String(booking.check_out).slice(0, 10)}
+                        </td>
+                        <td>{booking.guest_number}</td>
+                        <td>
+                          R{Number(booking.total_price).toFixed(2)}
+                        </td>
+                        <td>{booking.booking_status}</td>
+                        <td>
+                          {booking.created_at
+                            ? String(booking.created_at).slice(0, 10)
+                            : '—'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </section>
+
         );
 
       case 'users':
