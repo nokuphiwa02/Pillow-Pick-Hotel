@@ -22,7 +22,7 @@ export const createBookingTables = async(): Promise<void> => {
             booking_status VARCHAR(50) NOT NULL DEFAULT 'Pending',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
              )
-            `)
+            `);
             try{
                 console.log('bookings table created successfully');
             }catch(error){
@@ -31,15 +31,42 @@ export const createBookingTables = async(): Promise<void> => {
 };
 
 export const createBookings = async (appData: NewBookings): Promise<Bookings> => {
-    const { user_id, room_id, check_in, check_out, guest_number, total_price } = appData;
+    const { user_id, room_id, check_in, check_out, guest_number } = appData;
+    console.log("CRITICAL CHECK - appData content:", appData);
 
+    const roomResult = await query(
+        `SELECT price_per_night FROM rooms WHERE id = $1`,
+        [room_id]
+    );
+
+    if (roomResult.rows.length === 0) {
+        throw new Error(`Room with ID ${room_id} not found.`);
+    }
+
+    const price_per_night = roomResult.rows[0].price_per_night;
+
+    // calculating days / nights
+    const dateIn = new Date(check_in);
+    const dateOut = new Date(check_out);
+    const differenceInTime = dateOut.getTime() - dateIn.getTime();
+    const total_days = Math.ceil(differenceInTime / (1000 * 3600 * 24)); 
+
+    if (total_days <= 0) {
+        throw new Error("Check-out date must be after check-in date.");
+    }
+
+   //calculating total price
+    const calculated_total_price = total_days * price_per_night;
+    console.log(`Calculated Price: ${calculated_total_price} (${total_days} nights @ R${price_per_night} per night)`);
+
+    
     const { rows } = await query(
         `
         INSERT INTO bookings(user_id, room_id, check_in, check_out, guest_number, total_price)
         VALUES($1, $2, $3, $4, $5, $6)
         RETURNING *
         `,
-        [user_id, room_id, check_in, check_out, guest_number, total_price]
+        [user_id, room_id, check_in, check_out, guest_number, calculated_total_price]
     );
 
     return rows[0];
