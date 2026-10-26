@@ -17,7 +17,7 @@ interface RoomModalProps {
   editingRoomId: number | null;
   loading: boolean;
   onClose: () => void;
-  onSubmit: (values: RoomFormValues) => void;
+  onSubmit: (values: RoomFormValues, imageFile: File | null) => void;
 }
 
 const RoomModal: React.FC<RoomModalProps> = ({
@@ -28,10 +28,24 @@ const RoomModal: React.FC<RoomModalProps> = ({
   onSubmit,
 }) => {
   const [form, setForm] = useState<RoomFormValues>(initialValues);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
 
   useEffect(() => {
     setForm(initialValues);
   }, [initialValues]);
+
+  useEffect(() => {
+    if (!imageFile) {
+      setImagePreview("");
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(imageFile);
+    setImagePreview(previewUrl);
+
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [imageFile]);
 
   const handleChange = (
     event: React.ChangeEvent<
@@ -46,9 +60,24 @@ const RoomModal: React.FC<RoomModalProps> = ({
     }));
   };
 
+  const handleImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0] ?? null;
+
+    if (file && !file.type.startsWith("image/")) {
+      alert("Please select a valid image file.");
+      event.target.value = "";
+      setImageFile(null);
+      return;
+    }
+
+    setImageFile(file);
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit(form);
+    onSubmit(form, imageFile);
   };
 
   return (
@@ -174,6 +203,42 @@ const RoomModal: React.FC<RoomModalProps> = ({
                 value={form.description}
                 onChange={handleChange}
               />
+            </div>
+
+            {/* Room image upload */}
+            <div className={styles.modalFullField}>
+              <label htmlFor="room_image">Room Image</label>
+              <input
+                id="room_image"
+                name="room_image"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                disabled={loading}
+                required={editingRoomId === null}
+              />
+
+              <small>
+                {editingRoomId === null
+                  ? "Select an image for this room."
+                  : "Choose a new image only if you want to replace the current one."}
+              </small>
+
+              {imagePreview && (
+                <div style={{ marginTop: "12px" }}>
+                  <img
+                    src={imagePreview}
+                    alt="Room image preview"
+                    style={{
+                      width: "100%",
+                      maxWidth: "320px",
+                      height: "180px",
+                      objectFit: "cover",
+                      borderRadius: "10px",
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
