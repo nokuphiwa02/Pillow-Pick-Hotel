@@ -67,32 +67,29 @@ export const RoomsView: React.FC = () => {
   };
 
  
-const handleSubmit = async (values: RoomFormValues) => {
+
+const handleSubmit = async (
+  values: RoomFormValues,
+  imageFile: File | null,
+) => {
   setMessage("");
 
-  const roomData = {
-    hotel_id: Number(values.hotel_id),
-    room_type: values.room_type,
-    capacity: Number(values.capacity),
-    quantity: Number(values.quantity),
-    description: values.description,
-    facilities: values.facilities,
-    price_per_night: Number(values.price_per_night),
-  };
-
   try {
+    const formData = new FormData();
+
+    formData.append("hotel_id", values.hotel_id);
+    formData.append("room_type", values.room_type);
+    formData.append("capacity", values.capacity);
+    formData.append("quantity", values.quantity);
+    formData.append("description", values.description);
+    formData.append("facilities", values.facilities);
+    formData.append("price_per_night", values.price_per_night);
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
     if (editingRoomId !== null) {
-      // Keep your existing update functionality
-      const formData = new FormData();
-
-      formData.append("hotel_id", values.hotel_id);
-      formData.append("room_type", values.room_type);
-      formData.append("capacity", values.capacity);
-      formData.append("quantity", values.quantity);
-      formData.append("description", values.description);
-      formData.append("facilities", values.facilities);
-      formData.append("price_per_night", values.price_per_night);
-
       await dispatch(
         updateRoomById({
           id: editingRoomId,
@@ -102,8 +99,12 @@ const handleSubmit = async (values: RoomFormValues) => {
 
       setMessage("Room updated successfully!");
     } else {
-      // Send a normal JSON object when creating a room
-      await dispatch(createRoom(roomData)).unwrap();
+      if (!imageFile) {
+        setMessage("Please select a room image.");
+        return;
+      }
+
+      await dispatch(createRoom(formData)).unwrap();
 
       setMessage("Room created successfully!");
     }
