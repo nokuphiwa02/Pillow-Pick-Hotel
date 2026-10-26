@@ -1,24 +1,67 @@
-.cardContainer{
-width: 240px;
-border-radius: 16px;
-box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-display: flex;
-flex-direction: column;
-margin: 8px;
+.cardContainer {
+  width: 100%;
+  max-width: 380px;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.htlImg{
-width: 100%;
-border-radius: 16px 16px 0 0;
+.cardContainer:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
 }
 
-.cardBtn{
-text-align: center;
-width: 90%;
-border-radius: 5px;
-padding: 8px 16px;
-background-color: #2d5a27;
-color:#ffffff;
-text-decoration: none;
-margin:8px;
+.htlImg {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+}
+
+.topic {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #0f4c3a;
+  margin: 18px 20px 8px;
+}
+
+.province {
+  font-size: 1rem;
+  color: #5f6f69;
+  margin: 0 20px 20px;
+}
+
+.cardBtn {
+  margin: auto 20px 20px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #1f5a46;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cardBtn:hover {
+  background: #174536;
+}
+
+@media (max-width: 768px) {
+  .cardContainer {
+    max-width: 100%;
+  }
+
+  .htlImg {
+    height: 200px;
+  }
+
+  .topic {
+    font-size: 1.5rem;
+  }
 }
