@@ -4,7 +4,7 @@ import { protect } from "../middleware/oAuthoMiddleware";
 
 const router = Router();
 
-router.post("/bookings", addBooking)
+router.post("/bookings",protect, addBooking)
 router.get("/bookings",protect, getAllBookings)
 router.get("/bookings/:id",getBookingsById)
 router.delete("/bookings/:id",protect,deleteBooking)
