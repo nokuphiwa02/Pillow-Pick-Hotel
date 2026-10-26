@@ -27,6 +27,12 @@ export const createRoomsTable = async (): Promise<void> => {
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
      )
     `);
+
+    await query(`
+    ALTER TABLE rooms
+    ADD COLUMN IF NOT EXISTS image TEXT[] NOT NULL
+    DEFAULT ARRAY[]::TEXT[];
+  `);
     try{
         console.log('rooms table created successfully');
     }catch(error){
@@ -38,15 +44,15 @@ export const createRooms = async(appData: NewRooms): Promise<Rooms> =>{
     if(!appData){
         throw new Error("Room data is missing");
     }
-    const { hotel_id, room_type, capacity, quantity, description,facilities, price_per_night} = appData
+    const { hotel_id, room_type, capacity, quantity, description,facilities, price_per_night,image = [],} = appData
 
     const { rows} = await query(
         `
-        INSERT INTO rooms(hotel_id,room_type,capacity,quantity,description,facilities,price_per_night) 
-        VALUES($1, $2, $3, $4, $5, $6,$7)
+        INSERT INTO rooms(hotel_id,room_type,capacity,quantity,description,facilities,price_per_night, image ) 
+        VALUES($1, $2, $3, $4, $5, $6,$7,$8)
         RETURNING *
         `,
-        [hotel_id,room_type,capacity,quantity,description,facilities,price_per_night]
+        [hotel_id,room_type,capacity,quantity,description,facilities,price_per_night,image]
         );
         return rows[0];
 };
@@ -54,7 +60,7 @@ export const createRooms = async(appData: NewRooms): Promise<Rooms> =>{
 
 export const findAllRooms = async(): Promise<Rooms[]> => {
     const { rows } = await query(
-        `SELECT id,hotel_id,room_type,capacity,quantity,description,facilities,price_per_night,created_at
+        `SELECT id,hotel_id,room_type,capacity,quantity,description,facilities,price_per_night,image,created_at
         FROM rooms ORDER BY id ASC`
     );
     return rows;
@@ -65,8 +71,8 @@ export const findRoomById = async(id: number): Promise<Rooms | null> => {
     return rows[0] || null;
 };
 
-export const updateRoomById = async(id: number, appData: Rooms ): Promise<Rooms | null> => {
-    const {hotel_id,room_type,capacity,quantity,description,facilities,price_per_night} = appData
+export const updateRoomById = async(id: number, appData: Partial< Rooms >): Promise<Rooms | null> => {
+    const {hotel_id,room_type,capacity,quantity,description,facilities,price_per_night,image,} = appData
     const { rows } = await query(`UPDATE rooms
         SET hotel_id = COALESCE($1,hotel_id),
         room_type = COALESCE($2,room_type),
@@ -74,10 +80,11 @@ export const updateRoomById = async(id: number, appData: Rooms ): Promise<Rooms 
         quantity = COALESCE($4,quantity),
         description = COALESCE($5,description),
         facilities = COALESCE($6,facilities),
-        price_per_night = COALESCE($7,price_per_night)
-        WHERE id = $8
+        price_per_night = COALESCE($7,price_per_night),
+        image = COALESCE($8::TEXT[], image)
+        WHERE id = $9
         RETURNING * `,
-        [hotel_id,room_type,capacity,quantity,description,facilities,price_per_night,id]
+        [hotel_id,room_type,capacity,quantity,description,facilities,price_per_night,image ??  null,id]
     );
     return rows[0] || null;
 };

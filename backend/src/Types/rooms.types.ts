@@ -11,7 +11,8 @@ export interface Rooms {
     description: string;
     facilities : string;
     price_per_night: number;
+    image: string[]; 
     createdAt_at:Date;
 }
 
-export type NewRooms = Omit<Rooms, "id">;
+export type NewRooms = Omit<Rooms, "id" | "image"> & {  image?: string[];};
