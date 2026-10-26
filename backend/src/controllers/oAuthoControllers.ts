@@ -38,7 +38,7 @@ export const login = async (req: Request, res: Response) => {
             return res.status(401).json({ message: "Invalid password" });
         }
 
-        const payload = { id: user.id, email: user.email, password: user.password };
+        const payload = { id: user.id, email: user.email};
 
         const token = jwt.sign(payload, process.env.JWT_SECRET!, {
             expiresIn: "1h",
@@ -69,7 +69,9 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const getUserById = async(req: Request, res:Response) => {
     try{
-      
+        // if(req.user!.role !== 'guest'){
+        // return res.status(403).json({ message: "Only guest can get users by Id" })
+        // }
        const id = parseInt(req.params.id as string);
        const user = await oAuthoService.findUserById(id)
 
