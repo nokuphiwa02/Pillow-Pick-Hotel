@@ -1,102 +1,125 @@
-// import React, { useState, useEffect } from 'react';
-// import styles from './GuetsDashboard.module.css';
 
-// export interface Hotels {
-//   id: number;
-//   hotel_name: string;
-//   address: string;
-//   city: string;
-//   rating: number;
-//   description: string;
-//   createdAt_at: Date;
-// }
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "../../../store";
 
-// export type NewHotels = Omit<Hotels, "id">;
+import { fetchHotels } from "../../redux/HotelSlice";
+import { getAllImages } from "../../redux/ImageSlice";
 
+import styles from "./GuetsDashboard.module.css";
+import Hero from "../Hero/Hero";
+import HotelCard from "../HotelCard/HotelCard";
 
-//  interface GuestPageProps {
-//   hotel: Hotels;
-//   mainImage: string;
-//   roomImage: string;
-//   kitchenImage: string;
-// }
+const API_BASE_URL = "http://localhost:5000";
 
-// export function GuestDashboard({ hotel, mainImage, roomImage, kitchenImage }: GuestPageProps) {
- 
-//   const [activeImage, setActiveImage] = useState<string>(mainImage);
+const getImageUrl = (imagePath?: string): string => {
+  if (!imagePath) return "/assets/fallback-hotel.jpg";
 
- 
-//   useEffect(() => {
-//     setActiveImage(mainImage);
-//   }, [hotel.id, mainImage]);
+  if (/^(https?:\/\/|data:|blob:)/i.test(imagePath)) {
+    return imagePath;
+  }
 
-//   return (
-//     <div className={styles.detailContainer}>
-      
-//       <div className={styles.gallerySection}>
-//         <div className={styles.mainImageWrapper}>
-//           <img src={activeImage} alt={`${hotel.hotel_name} View`} className={styles.mainImg} />
-//         </div>
-        
-       
-//         <div className={styles.thumbnailRow}>
-//           <img 
-//             src={mainImage} 
-//             alt="Main View" 
-//             className={`${styles.thumbnail} ${activeImage === mainImage ? styles.activeThumb : ''}`}
-//             onClick={() => setActiveImage(mainImage)}
-//           />
-//           <img 
-//             src={roomImage} 
-//             alt="Room View" 
-//             className={`${styles.thumbnail} ${activeImage === roomImage ? styles.activeThumb : ''}`}
-//             onClick={() => setActiveImage(roomImage)}
-//           />
-//           <img 
-//             src={kitchenImage} 
-//             alt="Kitchen View" 
-//             className={`${styles.thumbnail} ${activeImage === kitchenImage ? styles.activeThumb : ''}`}
-//             onClick={() => setActiveImage(kitchenImage)}
-//           />
-//         </div>
-//       </div>
+  const path = imagePath.replace(/\\/g, "/");
+  return `${API_BASE_URL}/${path.replace(/^\/+/, "")}`;
+};
 
-   
-//       <div className={styles.infoSection}>
-//         <h1 className={styles.hotelTitle}>{hotel.hotel_name}</h1>
-//         <p className={styles.hotelLocation}>📍 {hotel.address}, {hotel.city}</p>
-        
-//         <div className={styles.ratingSection}>
-//           <span>⭐ {hotel.rating} / 5</span>
-//         </div>
-        
-//         <hr className={styles.divider} />
-        
-//         <h3 className={styles.sectionTitle}>About the Hotel</h3>
-//         <p className={styles.hotelDescription}>{hotel.description}</p>
-        
-//         <hr className={styles.divider} />
-        
-//         <h3 className={styles.sectionTitle}>Facilities & Amenities</h3>
-//         <ul className={styles.facilitiesGrid}>
-//           <li className={styles.facilityItem}><span className={styles.facilityIcon}>✔</span> Free Wi-Fi</li>
-//           <li className={styles.facilityItem}><span className={styles.facilityIcon}>✔</span> Swimming Pool</li>
-//           <li className={styles.facilityItem}><span className={styles.facilityIcon}>✔</span> Air Conditioning</li>
-//           <li className={styles.facilityItem}><span className={styles.facilityIcon}>✔</span> Fully Equipped Kitchen</li>
-//         </ul>
+const GuestDashboard = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
-//         <div className={styles.bookingFooter}>
-//           <div className={styles.priceTag}>
-//             <span className={styles.priceAmount}>R1 500</span> / night
-//           </div>
-//           <button className={styles.bookBtn} type="button">
-//             Book Room Now
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
+  const { hotels, loading: hotelsLoading, error: hotelsError } =
+    useSelector((state: RootState) => state.hotels);
 
+  const { images, loading: imagesLoading, error: imagesError } =
+    useSelector((state: RootState) => state.images);
 
-// export default GuestDashboard;
+  useEffect(() => {
+    dispatch(fetchHotels());
+    dispatch(getAllImages());
+  }, [dispatch]);
+
+  const loading = hotelsLoading || imagesLoading;
+  const error = hotelsError || imagesError;
+
+  return (
+    <div className={styles.dashboard}>
+      <nav className={styles.navbar}>
+        <h2
+          className={styles.logo}
+          onClick={() => navigate("/user-dashboard")}
+        >
+          HavenStay
+        </h2>
+
+        <button
+          type="button"
+          className={styles.profileButton}
+          onClick={() => navigate("/profile")}
+          aria-label="Go to profile"
+        >
+          <span>Profile</span>
+          <span className={styles.profileIcon} aria-hidden="true">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="8" r="4" />
+              <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+            </svg>
+          </span>
+        </button>
+      </nav>
+
+      <Hero />
+
+      <main className={styles.cardGrid}>
+        {loading && <p>Loading hotels and images...</p>}
+
+        {error && (
+          <p className={styles.errorText}>
+            Unable to load hotels or images: {error}
+          </p>
+        )}
+
+        {!loading && !error && hotels.length === 0 && (
+          <p>No hotels available at the moment.</p>
+        )}
+
+        {!loading &&
+          !error &&
+          hotels.map((hotel) => {
+            const hotelImages = images.filter(
+              (image) => image.hotel_id === hotel.id
+            );
+
+            const selectedImage =
+              hotelImages.find((image) => image.is_primary) ??
+              hotelImages[0];
+
+            const imagePath = selectedImage?.img_url || hotel.image_url;
+
+            return (
+              <HotelCard
+                key={hotel.id}
+                imgSrc={getImageUrl(imagePath)}
+                imgAlt={`${hotel.hotel_name} hotel`}
+                hotel_name={hotel.hotel_name}
+                Province={hotel.city}
+                buttonText="View More"
+                onClick={() => navigate(`/hotels/${hotel.id}`)}
+              />
+            );
+          })}
+      </main>
+    </div>
+  );
+};
+
+export default GuestDashboard;
