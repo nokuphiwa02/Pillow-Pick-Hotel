@@ -13,7 +13,7 @@ interface LoginState {
     isAuthenticated: boolean;
 }
 
-const token = localStorage.getItem("token")
+const token = localStorage.getItem("Token");
 
 const initialState: LoginState = {
     currentUser: null,
@@ -53,8 +53,12 @@ export const LoginThunk = createAsyncThunk(
             }
 
             localStorage.setItem("Token",data.token);
-            
-            return data.user || data;
+            const loggedInUser = data.user || data;
+
+            localStorage.setItem("user", JSON.stringify(loggedInUser))
+
+            return loggedInUser;
+
         } catch (error) {
             return rejectWithValue(
                 error instanceof Error ? error.message : "An unknown error occurred",
