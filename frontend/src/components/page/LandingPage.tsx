@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../../store";
 import { fetchHotels } from "../../redux/HotelSlice";
+import { fetchFavourites } from "../../redux/FavourateSlice";
 import { getAllImages } from "../../redux/ImageSlice";
 import styles from "../page/LandingPage.module.css";
 import Navbar from "../navbar/navbar";
@@ -40,10 +41,17 @@ const LandingPage = () => {
   const { images, loading: imagesLoading, error: imagesError } =
     useSelector((state: RootState) => state.images);
 
-  useEffect(() => {
-    dispatch(fetchHotels());
-    dispatch(getAllImages());
-  }, [dispatch]);
+ useEffect(() => {
+  dispatch(fetchHotels());
+  dispatch(getAllImages());
+
+  const token = localStorage.getItem("Token");
+  const savedUser = localStorage.getItem("user");
+
+  if (token && savedUser) {
+    dispatch(fetchFavourites());
+  }
+}, [dispatch]);
 
   const loading = hotelsLoading || imagesLoading;
   const error = hotelsError || imagesError;
@@ -86,8 +94,9 @@ const LandingPage = () => {
             selectedImage?.img_url || hotel.image_url;
 
           return (
-            <HotelCard
+           <HotelCard
             key={hotel.id}
+            hotelId={Number(hotel.id)}
             imgSrc={getImageUrl(imagePath)}
             imgAlt={`${hotel.hotel_name} hotel`}
             hotel_name={hotel.hotel_name}
