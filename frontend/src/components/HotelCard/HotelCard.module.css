@@ -52,6 +52,35 @@
   background: #174536;
 }
 
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+}
+
+.favouriteBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: white;
+  color: #e63946;
+  font-size: 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.favouriteBtn:hover {
+  transform: scale(1.08);
+}
+
+
 @media (max-width: 768px) {
   .cardContainer {
     max-width: 100%;
