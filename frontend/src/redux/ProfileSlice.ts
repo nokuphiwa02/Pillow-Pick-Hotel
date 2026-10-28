@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
+
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export interface OAuthUser {
   id: string;
@@ -40,31 +40,50 @@ const initialState: UserState = {
   error: null,
 };
 
-// Create Profile
-export const CreateProfileThunk = createAsyncThunk(
+// CREATE PROFILE
+export const CreateProfileThunk = createAsyncThunk<
+  Profile,
+  Omit<Profile, "id" | "created_at">,
+  { rejectValue: string }
+>(
   "users/CreateProfileThunk",
-  async (newProfile: Omit<Profile, "id" | "created_at">) => {
-    const response = await fetch("/api/profile", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newProfile),
-    });
+  async (newProfile, { rejectWithValue }) => {
+    try {
+      const response = await fetch("/api/profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProfile),
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to create profile");
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        return rejectWithValue(
+          data?.message ||
+            data?.error ||
+            "Failed to create profile."
+        );
+      }
+
+      return data as Profile;
+    } catch {
+      return rejectWithValue(
+        "Unable to connect to the server."
+      );
     }
-
-    return (await response.json()) as Profile;
-  },
+  }
 );
 
-// Get Profile By ID
-
-export const GetProfileByIdThunk = createAsyncThunk(
+// GET PROFILE BY ID
+export const GetProfileByIdThunk = createAsyncThunk<
+  Profile,
+  number,
+  { rejectValue: string }
+>(
   "users/GetProfileByIdThunk",
-  async (id: number, { rejectWithValue }) => {
+  async (id, { rejectWithValue }) => {
     try {
       const token =
         localStorage.getItem("Token") ??
@@ -74,51 +93,78 @@ export const GetProfileByIdThunk = createAsyncThunk(
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(token
+            ? { Authorization: `Bearer ${token}` }
+            : {}),
         },
       });
 
+      const data = await response.json().catch(() => null);
+
       if (!response.ok) {
-        const message = await response.text();
         return rejectWithValue(
-          `Failed to retrieve profile (${response.status}): ${message}`
+          data?.message ||
+            data?.error ||
+            `Failed to retrieve profile (${response.status}).`
         );
       }
 
-      return (await response.json()) as Profile;
+      return data as Profile;
     } catch {
-      return rejectWithValue("Unable to connect to the server.");
+      return rejectWithValue(
+        "Unable to connect to the server."
+      );
     }
   }
 );
 
-
-// Update Profile
-export const UpdateProfileThunk = createAsyncThunk(
-  "users/UpdateProfileThunk",
-  async ({
-    id,
-    profileData,
-  }: {
+// UPDATE PROFILE
+export const UpdateProfileThunk = createAsyncThunk<
+  Profile,
+  {
     id: number;
     profileData: Partial<Profile>;
-  }) => {
-    const response = await fetch(`/api/profile/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(profileData),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to update profile");
-    }
-
-    return (await response.json()) as Profile;
   },
+  { rejectValue: string }
+>(
+  "users/UpdateProfileThunk",
+  async ({ id, profileData }, { rejectWithValue }) => {
+    try {
+      const token =
+        localStorage.getItem("Token") ??
+        localStorage.getItem("token");
+
+      const response = await fetch(`/api/profile/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token
+            ? { Authorization: `Bearer ${token}` }
+            : {}),
+        },
+        body: JSON.stringify(profileData),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        return rejectWithValue(
+          data?.message ||
+            data?.error ||
+            `Failed to update profile (${response.status}).`
+        );
+      }
+
+      return data as Profile;
+    } catch {
+      return rejectWithValue(
+        "Unable to connect to the server. Please try again."
+      );
+    }
+  }
 );
 
+// REDUX SLICE
 export const RegisterSlice = createSlice({
   name: "signUp",
   initialState,
@@ -129,15 +175,22 @@ export const RegisterSlice = createSlice({
     AddPhone: (state, action: PayloadAction<number>) => {
       state.phone = action.payload;
     },
-    AddEmailAddress: (state, action: PayloadAction<string>) => {
+    AddEmailAddress: (
+      state,
+      action: PayloadAction<string>
+    ) => {
       state.email = action.payload;
     },
-    AddPassword: (state, action: PayloadAction<string>) => {
+    AddPassword: (
+      state,
+      action: PayloadAction<string>
+    ) => {
       state.password = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
+      // CREATE
       .addCase(CreateProfileThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -145,12 +198,17 @@ export const RegisterSlice = createSlice({
       .addCase(CreateProfileThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         state.profile = action.payload;
+        state.error = null;
       })
       .addCase(CreateProfileThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message ?? "Failed to create profile";
+        state.error =
+          action.payload ??
+          action.error.message ??
+          "Failed to create profile.";
       })
 
+      // GET
       .addCase(GetProfileByIdThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -158,12 +216,17 @@ export const RegisterSlice = createSlice({
       .addCase(GetProfileByIdThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         state.profile = action.payload;
+        state.error = null;
       })
       .addCase(GetProfileByIdThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message ?? "Failed to retrieve profile";
+        state.error =
+          action.payload ??
+          action.error.message ??
+          "Failed to retrieve profile.";
       })
 
+      // UPDATE
       .addCase(UpdateProfileThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -171,14 +234,23 @@ export const RegisterSlice = createSlice({
       .addCase(UpdateProfileThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         state.profile = action.payload;
+        state.error = null;
       })
       .addCase(UpdateProfileThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message ?? "Failed to update profile";
+        state.error =
+          action.payload ??
+          action.error.message ??
+          "Failed to update profile.";
       });
   },
 });
 
-export const { AddName, AddPhone, AddEmailAddress,AddPassword,} = RegisterSlice.actions;
+export const {
+  AddName,
+  AddPhone,
+  AddEmailAddress,
+  AddPassword,
+} = RegisterSlice.actions;
 
 export default RegisterSlice.reducer;
