@@ -45,7 +45,7 @@ export const createBookings = async (appData: NewBookings): Promise<Bookings> =>
 
     const price_per_night = roomResult.rows[0].price_per_night;
 
-    // calculating days / nights
+ 
     const dateIn = new Date(check_in);
     const dateOut = new Date(check_out);
     const differenceInTime = dateOut.getTime() - dateIn.getTime();
@@ -55,7 +55,7 @@ export const createBookings = async (appData: NewBookings): Promise<Bookings> =>
         throw new Error("Check-out date must be after check-in date.");
     }
 
-   //calculating total price
+   
     const calculated_total_price = total_days * price_per_night;
     console.log(`Calculated Price: ${calculated_total_price} (${total_days} nights @ R${price_per_night} per night)`);
 
