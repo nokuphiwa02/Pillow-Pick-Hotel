@@ -1,0 +1,210 @@
+.checkoutPage {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #eaf7f0, #f7fbf8);
+  box-sizing: border-box;
+}
+
+.card {
+  width: 100%;
+  max-width: 650px;
+  padding: 35px;
+  background: #ffffff;
+  border: 1px solid #d8e8df;
+  border-radius: 16px;
+  box-shadow: 0 10px 35px rgba(19, 56, 36, 0.1);
+  box-sizing: border-box;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: #2c5e43;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+.card h1 {
+  margin: 0;
+  color: #133824;
+  font-size: 32px;
+  font-weight: 750;
+}
+
+.subtitle {
+  margin: 10px 0 28px;
+  color: #687b70;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.bookingDetails {
+  padding-top: 22px;
+  border-top: 1px solid #e3ece6;
+}
+
+.bookingDetails h2 {
+  margin: 0 0 20px;
+  color: #133824;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid #edf2ee;
+  font-size: 14px;
+}
+
+.detailRow span {
+  color: #647469;
+}
+
+.detailRow strong {
+  color: #183f2b;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 20px;
+  background: #dff8ee;
+  border-left: 4px solid #c6a15b;
+  border-radius: 8px;
+  color: #133824;
+  font-size: 16px;
+}
+
+.totalRow strong {
+  font-size: 23px;
+  font-weight: 800;
+  color: #245c43;
+}
+
+.pending {
+  margin: 20px 0;
+  padding: 12px 14px;
+  background: #fff8e8;
+  border: 1px solid #f0dfb8;
+  border-radius: 8px;
+  color: #785b21;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.error {
+  margin: 15px 0;
+  padding: 12px 14px;
+  background: #fff0f0;
+  border: 1px solid #f1caca;
+  border-radius: 8px;
+  color: #b42318;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.payButton,
+.backButton {
+  width: 100%;
+  min-height: 48px;
+  padding: 13px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.payButton {
+  margin-top: 8px;
+  background: linear-gradient(135deg, #245c43, #347b5b);
+  color: #ffffff;
+  border: 1px solid #c6a15b;
+  box-shadow: 0 4px 12px rgba(36, 92, 67, 0.15);
+}
+
+.payButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #194832, #286548);
+  box-shadow: 0 6px 16px rgba(36, 92, 67, 0.22);
+  transform: translateY(-1px);
+}
+
+.payButton:disabled,
+.backButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.backButton {
+  margin-top: 12px;
+  background: #ffffff;
+  color: #245c43;
+  border: 1px solid #cbdcd1;
+}
+
+.backButton:hover:not(:disabled) {
+  background: #edf8f2;
+  border-color: #245c43;
+}
+
+.payButton:focus-visible,
+.backButton:focus-visible {
+  outline: 3px solid #c6a15b;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .checkoutPage {
+    align-items: flex-start;
+    padding: 20px 12px;
+  }
+
+  .card {
+    padding: 24px 18px;
+    border-radius: 12px;
+  }
+
+  .card h1 {
+    font-size: 27px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .bookingDetails h2 {
+    font-size: 18px;
+  }
+
+  .detailRow {
+    gap: 12px;
+    font-size: 13px;
+  }
+
+  .totalRow {
+    padding: 16px 12px;
+    font-size: 14px;
+  }
+
+  .totalRow strong {
+    font-size: 20px;
+  }
+}
