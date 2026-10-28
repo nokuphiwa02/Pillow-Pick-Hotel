@@ -52,29 +52,31 @@ const GuestDashboard = () => {
           HavenStay
         </h2>
 
-        <button
-          type="button"
-          className={styles.profileButton}
-          onClick={() => navigate("/profile")}
-          aria-label="Go to profile"
+        
+    <button
+      type="button"
+      className={styles.profileButton}
+      onClick={() => navigate("/profile")}
+      aria-label="Go to profile"
+    >
+      <span>Profile</span>
+      <span className={styles.profileIcon} aria-hidden="true">
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <span>Profile</span>
-          <span className={styles.profileIcon} aria-hidden="true">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="8" r="4" />
-              <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-            </svg>
-          </span>
-        </button>
+          <circle cx="12" cy="8" r="4" />
+          <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+        </svg>
+      </span>
+    </button>
+
       </nav>
 
       <Hero />
