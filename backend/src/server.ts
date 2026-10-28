@@ -10,13 +10,17 @@ import roomRoutes from './routes/roomRoutes';
 import bookingRoutes from './routes/bookingRoutes';
 import reviewRoutes from './routes/reviewRoutes';
 import favouriteRoutes from './routes/favouriteRoutes';
-import hotelImageRoutes from './routes/hotelImageRoutes'
+import hotelImageRoutes from './routes/hotelImageRoutes';
+import profileRoutes from './routes/profileRoutes';
+import PaymentRoutes  from './routes/paymentRoutes';
 import { createHotelsTable } from './service/hotelService'
 import { createRoomsTable } from './service/roomService';
 import { createBookingTables } from './service/bookingService';
 import { createReviewsTable } from './service/reviewService';
 import { createFavourateTable } from './service/favouriteService';
 import { createHotelImageTable } from './service/hotelImageService';
+import { createProfileTable } from './service/profileService';
+import { createPaymentTables } from './service/paymentService';
 
 
 dotenv.config();
@@ -40,6 +44,8 @@ const startServer = async () => {
     await createReviewsTable();
     await createFavourateTable();
     await createHotelImageTable();
+    await createProfileTable();
+    await createPaymentTables();
 
 
 
@@ -52,8 +58,9 @@ const startServer = async () => {
   app.use("/api",bookingRoutes);
   app.use("/api", reviewRoutes);
   app.use("/api", favouriteRoutes);
-  app.use("/api",hotelImageRoutes)
- 
+  app.use("/api",hotelImageRoutes);
+  app.use("/api",profileRoutes);
+ app.use("/api",PaymentRoutes)
 
 
 app.listen(PORT, () => {
