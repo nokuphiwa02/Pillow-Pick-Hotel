@@ -5,6 +5,8 @@ import hotelReducer from './src/redux/HotelSlice'
 import imageReducer from './src/redux/ImageSlice'
 import roomReducer from './src/redux/RoomSlice'
 import bookingReducer from './src/redux/BookingSlice'
+import profileReducer from './src/redux/ProfileSlice'
+import PaymentReducer  from './src/redux/PaymentSlice'
 
 
 
@@ -16,6 +18,8 @@ export const store = configureStore({
     images:imageReducer,
     rooms: roomReducer,
     bookings: bookingReducer,
+    profile: profileReducer,
+    payments: PaymentReducer,
    
 }
 })
