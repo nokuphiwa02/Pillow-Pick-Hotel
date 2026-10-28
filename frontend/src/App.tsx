@@ -9,7 +9,8 @@ import RoomsView from "./components/page/RoomsView";
 import HotelDetailCard from "./components/HotelDetailCard/HotelDetailCard";
 import GuestDashboard from "./components/page/GuestDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { BookingModal } from "./components/page/BookingModal";
+import { Profile } from "./components/page/Profile";
+import Checkout from "./components/page/Checkout"
 
 
 const App = () => {
@@ -19,15 +20,21 @@ const App = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<LoginForm />} />
       <Route path="/hotels/:id" element={<HotelDetailCard />} />
-      <Route element={<ProtectedRoute allowedRole="admin" />}>
+
+
+    <Route element={<ProtectedRoute allowedRole="admin" />}>
       <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/admin/accommodation" element={<Accommodation />} />
       <Route path="/admin/rooms" element={<RoomsView />} />
     </Route>
-      <Route element={<ProtectedRoute allowedRole="guest" />}>
+
+    <Route element={<ProtectedRoute allowedRole="guest" />}>
       <Route path="/Guestdashboard" element={<GuestDashboard />} />
        <Route path="/guest/hotel/bookings" element={<HotelDetailCard />} />
-      </Route>
+       <Route path= "/guest/hotel/:id/checkout" element={<Checkout/>}/>
+    </Route>
+
+      <Route path="/profile" element = {<Profile/>}/>
     </Routes>
   );
 };
