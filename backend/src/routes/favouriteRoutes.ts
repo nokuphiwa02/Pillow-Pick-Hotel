@@ -5,7 +5,7 @@ const router = Router();
 
 router.post("/favourites", addFavourites)
 router.get("/favourites", getAllFavourites)
-router.get("/favourites",getFavouritesById)
-router.delete("/favourites",deleteFavourites)
+router.get("/favourites/:id",getFavouritesById)
+router.delete("/favourites/:id",deleteFavourites)
 
 export default router;
