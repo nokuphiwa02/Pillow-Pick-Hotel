@@ -1,0 +1,168 @@
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 25, 18, 0.72);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modalContent {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 16px;
+  border: 1px solid #d6e8dc;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  animation: modalFadeIn 0.25s ease-out;
+}
+
+
+.modalContent h3 {
+  margin: 0 0 16px;
+  color: #133824;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.modalContent p {
+  color: #5d6d63;
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0 0 24px;
+}
+
+.modalContent .errorMessage {
+  background: #fff0f0;
+  color: #b42318;
+  border: 1px solid #f3c6c6;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.modalActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+
+.payButton {
+  width: 100%;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #245c43, #347b5b);
+  color: #ffffff;
+  border: 1px solid #c6a15b;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.payButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #194630, #286448);
+  box-shadow: 0 5px 14px rgba(36, 92, 67, 0.2);
+  transform: translateY(-1px);
+}
+
+.payButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.cancelButton {
+  width: 100%;
+  padding: 13px 20px;
+  background: #f4faf6;
+  color: #245c43;
+  border: 1px solid #d5e5da;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: #e5f4eb;
+  border-color: #9fc9ae;
+}
+
+.payButton:disabled,
+.cancelButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+
+.payButton:focus-visible,
+.cancelButton:focus-visible {
+  outline: 3px solid #c6a15b;
+  outline-offset: 3px;
+}
+
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+@media (max-width: 480px) {
+  .modalOverlay {
+    padding: 16px;
+  }
+
+  .modalContent {
+    padding: 24px 20px;
+    border-radius: 12px;
+  }
+
+  .modalContent h3 {
+    font-size: 20px;
+  }
+
+  .modalContent p {
+    font-size: 14px;
+  }
+
+  .payButton,
+  .cancelButton {
+    padding: 13px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modalContent {
+    animation: none;
+  }
+
+  .payButton,
+  .cancelButton {
+    transition: none;
+  }
+}
