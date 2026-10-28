@@ -110,6 +110,7 @@ const GuestDashboard = () => {
             return (
               <HotelCard
                 key={hotel.id}
+                hotelId={Number(hotel.id)}
                 imgSrc={getImageUrl(imagePath)}
                 imgAlt={`${hotel.hotel_name} hotel`}
                 hotel_name={hotel.hotel_name}
