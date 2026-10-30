@@ -1,23 +1,71 @@
 import { Request, Response } from "express";
 import * as oAuthoService from "../service/oAuthoService";
+import * as profileService from "../service/profileService";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
+
 export const register = async (req: Request, res: Response) => {
-    const {  email, name, password,phone } = req.body;
-    if ( !email || !name || !password || !phone) {
-        return res.status(400).json({ message: "Missing required fields" });
+    const { email, name, password, phone } = req.body;
+
+    if (!email || !name || !password || !phone) {
+        return res.status(400).json({
+            message: "Missing required fields"
+        });
     }
+
     try {
         const existingUser = await oAuthoService.getOAuthUserByEmail(email);
+
         if (existingUser) {
-            return res.status(409).json({ message: "email is already exist" })
+            return res.status(409).json({
+                message: "Email already exists"
+            });
         }
-        const user = await oAuthoService.createOAuthUser(email, name, password, phone);
-        res.status(201).json({ message: "user registered successfully" });
+
+        // Create the user
+        const user = await oAuthoService.createOAuthUser(
+            email,
+            name,
+            password,
+            phone
+        );
+
+        // Create the user's profile
+        const profile = await profileService.createProfile({
+            user_id: user.id,
+            name: user.name,
+            email: user.email,
+            password: user.password,
+            phone: String(user.phone),
+            profile_picture: "",
+            address: ""
+        });
+
+        return res.status(201).json({
+            message: "User registered successfully",
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone
+            },
+            profile: {
+                id: profile.id,
+                user_id: profile.user_id,
+                name: profile.name,
+                email: profile.email,
+                phone: profile.phone,
+                profile_picture: profile.profile_picture,
+                address: profile.address
+            }
+        });
     } catch (error) {
-        console.error("register error:", error);
-        res.status(500).json({ message: "Error registering user" });
+        console.error("Registration error:", error);
+
+        return res.status(500).json({
+            message: "Error registering user"
+        });
     }
 };
 
@@ -38,7 +86,7 @@ export const login = async (req: Request, res: Response) => {
             return res.status(401).json({ message: "Invalid password" });
         }
 
-        const payload = { id: user.id, email: user.email};
+      const payload = {id: user.id, email: user.email,role: user.role};
 
         const token = jwt.sign(payload, process.env.JWT_SECRET!, {
             expiresIn: "1h",
