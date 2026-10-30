@@ -6,5 +6,7 @@
 "outDir": "./dist",
 "esModuleInterop": true,
 "strict": true,
-  }
+"types": ["node", "multer"],
+"skipLibCheck": true,
+  },
 }
