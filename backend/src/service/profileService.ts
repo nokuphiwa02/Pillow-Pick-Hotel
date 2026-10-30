@@ -24,23 +24,54 @@ export const createProfileTable = async (): Promise<void> => {
     }
 };
 
-export const createProfile = async (appData: NewProfile): Promise<Profile> => {
-  const {user_id,name,email,password,phone,profile_picture,address,} = appData;
 
-  const { rows } = await query(`INSERT INTO profile ( user_id, name,email,password, phone,profile_picture,address,created_at)
-    VALUES ($1, $2, $3, $4, $5, $6,$7, $8) RETURNING *`,
-    [user_id,name,email,password,phone,profile_picture,address,]
+export const createProfile = async (appData: NewProfile): Promise<Profile> => {
+  const {
+    user_id,
+    name,
+    email,
+    password,
+    phone,
+    profile_picture,
+    address,
+  } = appData;
+
+  const { rows } = await query(
+    `INSERT INTO profile (
+      user_id, name, email, password, phone, profile_picture, address
+    )
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *`,
+    [
+      user_id,
+      name,
+      email,
+      password,
+      phone,
+      profile_picture,
+      address,
+    ]
   );
 
   return rows[0];
 };
-export const findProfileById = async(userId: number): Promise<Profile | null> => {
-    const { rows } = await query(`SELECT * FROM profile WHERE id= $1` ,[userId]);
-    return rows[0] || null;
-};
 
-export const updateProfileById = async (  id: number,appData: Partial<Profile>): Promise<Profile | null> => {
-  const {name,email,password,phone,profile_picture,address,} = appData;
+
+export const findProfileById = async (
+  userId: number
+): Promise<Profile | null> => {
+  const { rows } = await query(
+    `SELECT * FROM profile WHERE user_id = $1`,
+    [userId]
+  );
+
+  return rows[0] || null;
+};
+export const updateProfileById = async (
+  userId: number,
+  appData: Partial<Profile>
+): Promise<Profile | null> => {
+  const { name, email, password, phone, profile_picture, address } = appData;
 
   const { rows } = await query(
     `UPDATE profile
@@ -50,11 +81,10 @@ export const updateProfileById = async (  id: number,appData: Partial<Profile>):
          phone = COALESCE($4, phone),
          profile_picture = COALESCE($5, profile_picture),
          address = COALESCE($6, address)
-     WHERE id = $7
+     WHERE user_id = $7
      RETURNING *`,
-    [name, email, password, phone, profile_picture, address, id]
+    [name, email, password, phone, profile_picture, address, userId]
   );
 
   return rows[0] || null;
 };
-
