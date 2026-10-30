@@ -6,7 +6,7 @@ const router = Router();
 
 router.post("/bookings",protect, addBooking)
 router.get("/bookings",protect, getAllBookings)
-router.get("/bookings/:id",getBookingsById)
+router.get("/bookings/:id",protect,getBookingsById)
 router.delete("/bookings/:id",protect,deleteBooking)
 
 export default router;
