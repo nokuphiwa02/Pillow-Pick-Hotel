@@ -1,0 +1,305 @@
+.usersPage {
+  width: 100%;
+  min-width: 0;
+  color: #183b2a;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #438564;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.pageHeader h2 {
+  margin: 0;
+  color: #183b2a;
+  font-size: 30px;
+  font-weight: 750;
+}
+
+.subtitle {
+  margin: 9px 0 0;
+  color: #718176;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.refreshButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 9px;
+  background: #2c5e43;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.refreshButton:hover:not(:disabled) {
+  background: #214a34;
+  transform: translateY(-2px);
+}
+
+.refreshButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.statsCard {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: fit-content;
+  min-width: 230px;
+  margin-bottom: 28px;
+  padding: 22px 28px;
+  border: 1px solid #dcece2;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ffffff 0%, #edfaf3 100%);
+  box-shadow: 0 5px 18px rgba(28, 74, 49, 0.05);
+  box-sizing: border-box;
+}
+
+.statsIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #dff8ee;
+  color: #2c5e43;
+  font-size: 28px;
+}
+
+.statsCard p {
+  margin: 0 0 7px;
+  color: #6c7f72;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.statsCard h3 {
+  margin: 0;
+  color: #183b2a;
+  font-size: 29px;
+  font-weight: 750;
+}
+
+.errorMessage {
+  margin: 0 0 20px;
+  padding: 13px 16px;
+  border: 1px solid #f3c5c5;
+  border-radius: 9px;
+  background: #fff1f1;
+  color: #b42323;
+  font-size: 13px;
+}
+
+.tableCard {
+  overflow: hidden;
+  border: 1px solid #e2eae4;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 5px 20px rgba(28, 74, 49, 0.045);
+}
+
+.tableHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 24px;
+  border-bottom: 1px solid #e8eee9;
+}
+
+.tableHeader h3 {
+  margin: 0;
+  color: #183b2a;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.tableHeader span {
+  padding: 6px 11px;
+  border-radius: 20px;
+  background: #dff8ee;
+  color: #2c5e43;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.usersTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.usersTable thead {
+  background: #f4f8f5;
+}
+
+.usersTable th {
+  padding: 16px 20px;
+  color: #627568;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #e3ebe5;
+}
+
+.usersTable td {
+  padding: 17px 20px;
+  color: #56685c;
+  font-size: 13px;
+  border-bottom: 1px solid #edf1ee;
+}
+
+.usersTable tbody tr {
+  transition: background 0.2s ease;
+}
+
+.usersTable tbody tr:hover {
+  background: #f5fbf7;
+}
+
+.usersTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.userName {
+  color: #234b34 !important;
+  font-weight: 650;
+}
+
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  padding: 6px 11px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.adminRole {
+  background: #fff2d8;
+  color: #94621a;
+}
+
+.guestRole {
+  background: #dff8ee;
+  color: #2c6848;
+}
+
+.deleteButton {
+  padding: 8px 13px;
+  border: 1px solid #f1cccc;
+  border-radius: 7px;
+  background: #fff1f1;
+  color: #c43131;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background: #c43131;
+  color: #ffffff;
+  border-color: #c43131;
+}
+
+.deleteButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.statusMessage {
+  padding: 35px 20px;
+  color: #718176;
+  font-size: 14px;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .pageHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pageHeader h2 {
+    font-size: 26px;
+  }
+
+  .refreshButton {
+    width: 100%;
+  }
+
+  .statsCard {
+    width: 100%;
+    min-width: 0;
+    padding: 18px 20px;
+  }
+
+  .tableHeader {
+    padding: 18px;
+  }
+
+  .usersTable th,
+  .usersTable td {
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageHeader h2 {
+    font-size: 23px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .tableHeader h3 {
+    font-size: 15px;
+  }
+}

@@ -1,3 +1,4 @@
+
 .cardContainer {
   width: 100%;
   max-width: 380px;
@@ -15,6 +16,12 @@
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
 }
 
+/* Hotel image and favourite button positioning */
+.imageContainer {
+  position: relative;
+  width: 100%;
+}
+
 .htlImg {
   width: 100%;
   height: 240px;
@@ -22,27 +29,70 @@
   display: block;
 }
 
+/* Favourite heart */
+.favouriteBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #e63946;
+  font-size: 27px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.favouriteBtn:hover {
+  transform: scale(1.08);
+  background: #fff0f1;
+}
+
+/* Hotel name */
 .topic {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #0f4c3a;
   margin: 18px 20px 8px;
+  overflow-wrap: anywhere;
 }
 
+/* Hotel location */
 .province {
   font-size: 1rem;
   color: #5f6f69;
+  margin: 0 20px 18px;
+}
+
+/* View More and Share row */
+.cardActions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
   margin: 0 20px 20px;
 }
 
 .cardBtn {
-  margin: auto 20px 20px;
-  padding: 12px 20px;
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  margin: 0;
+  padding: 10px 16px;
   border: none;
   border-radius: 10px;
   background: #1f5a46;
   color: #ffffff;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s ease;
@@ -52,35 +102,80 @@
   background: #174536;
 }
 
-
-.imageContainer {
-  position: relative;
-  width: 100%;
-}
-
-.favouriteBtn {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 42px;
-  height: 42px;
-  border: none;
-  border-radius: 50%;
-  background: white;
-  color: #e63946;
-  font-size: 25px;
-  cursor: pointer;
+/* Share icon button */
+.shareBtn {
+  box-sizing: border-box;
+  flex: 0 0 46px;
+  width: 46px;
+  min-width: 46px;
+  height: 46px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #2c5e43;
+  border-radius: 10px;
+  background: #dff8ee;
+  color: #2c5e43;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.favouriteBtn:hover {
-  transform: scale(1.08);
+.shareBtn svg {
+  display: block;
+  width: 19px;
+  height: 19px;
 }
 
+.shareBtn:hover {
+  background: #2c5e43;
+  color: #ffffff;
+}
 
+/* Share status message */
+.shareMessage {
+  margin: -10px 20px 18px;
+  color: #2c6848;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Favourite login error */
+.favouriteError {
+  margin: 8px 20px 12px;
+  color: #b42318;
+  font-size: 13px;
+}
+
+.favouriteError p {
+  margin: 0 0 8px;
+}
+
+.loginButton {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #2c5e43;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.loginButton:hover {
+  background: #214a34;
+}
+
+/* Keyboard focus */
+.favouriteBtn:focus-visible,
+.cardBtn:focus-visible,
+.shareBtn:focus-visible,
+.loginButton:focus-visible {
+  outline: 3px solid #a8d9bb;
+  outline-offset: 3px;
+}
+
+/* Responsive layout */
 @media (max-width: 768px) {
   .cardContainer {
     max-width: 100%;
@@ -91,6 +186,26 @@
   }
 
   .topic {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .cardActions {
+    gap: 8px;
+    margin-right: 14px;
+    margin-left: 14px;
+  }
+
+  .cardBtn {
+    padding: 10px 8px;
+    font-size: 0.88rem;
+  }
+
+  .shareBtn {
+    flex-basis: 42px;
+    width: 42px;
+    min-width: 42px;
+    height: 44px;
   }
 }

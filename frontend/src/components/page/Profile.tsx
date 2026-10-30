@@ -3,19 +3,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import type { RootState, AppDispatch } from "../../../store";
-
-import {
-  GetProfileByIdThunk,
-  UpdateProfileThunk,
-} from "../../redux/ProfileSlice";
+import {GetProfileByIdThunk,UpdateProfileThunk,} from "../../redux/ProfileSlice";
 import { fetchBookings } from "../../redux/BookingSlice";
 import { fetchHotels } from "../../redux/HotelSlice";
 import { getAllImages } from "../../redux/ImageSlice";
 import { fetchRooms } from "../../redux/RoomSlice";
-import {
-  fetchFavourites,
-  removeFavourite,
-} from "../../redux/FavourateSlice";
+import {fetchFavourites, removeFavourite,} from "../../redux/FavourateSlice";
 
 import styles from "./Profile.module.css";
 
@@ -133,12 +126,12 @@ export const Profile = () => {
   ) => {
     e.preventDefault();
 
-    const id = profile?.id ?? userId;
+    const id = userId;
 
-    if (!id) {
-      alert("Profile ID not found. Please log in again.");
-      return;
-    }
+if (!id) {
+  alert("User ID not found. Please log in again.");
+  return;
+}
 
     const profileData = {
       name: formData.name.trim(),
@@ -365,12 +358,27 @@ export const Profile = () => {
               </button>
 
               <button
-                type="button"
-                className={styles.backBtn}
-                onClick={() => navigate("/Guestdashboard")}
-              >
-                Back
-              </button>
+            type="button"
+            className={styles.backBtn}
+            onClick={() => {
+              const savedUser = localStorage.getItem("user");
+
+              if (!savedUser) {
+                navigate("/login");
+                return;
+              }
+
+              const loggedInUser = JSON.parse(savedUser);
+
+              if (loggedInUser.role === "admin") {
+                navigate("/admin");
+              } else {
+                navigate("/Guestdashboard");
+              }
+            }}
+          >
+            Back
+          </button>
             </div>
           </div>
         </div>

@@ -213,6 +213,61 @@
   font-weight: 700;
 }
 
+.profileButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.profileButton:hover {
+  transform: scale(1.08);
+}
+
+.profileButton:focus-visible {
+  outline: 2px solid #2c5e43;
+  outline-offset: 4px;
+}
+
+.profile {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.deleteBookingButton {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: #b42318;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.deleteBookingButton:hover:not(:disabled) {
+  background-color: #8f1d14;
+  transform: translateY(-1px);
+}
+
+.deleteBookingButton:disabled {
+  background-color: #b8b8b8;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+
 /* Responsive Design */
 @media (max-width: 900px) {
   .adminContainer {

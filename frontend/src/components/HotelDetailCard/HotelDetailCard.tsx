@@ -3,11 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../../store";
+
 import { fetchHotels } from "../../redux/HotelSlice";
 import { fetchRooms, type Room } from "../../redux/RoomSlice";
 import { getAllImages } from "../../redux/ImageSlice";
-import {BookingModal} from "../page/BookingModal";
+import {fetchReviews,createReview,} from "../../redux/ReviewSlice";
 
+import { BookingModal } from "../page/BookingModal";
 import styles from "./HotelDetailCard.module.css";
 
 const API_BASE_URL = "http://localhost:5000";
@@ -31,6 +33,10 @@ const HotelDetailCard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [reviewRating, setReviewRating] = useState<number>(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewMessage, setReviewMessage] = useState("");
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
 
   const {
     hotels,
@@ -48,10 +54,17 @@ const HotelDetailCard: React.FC = () => {
     (state: RootState) => state.images
   );
 
+  const {
+    reviews,
+    loading: reviewsLoading,
+    error: reviewsError,
+  } = useSelector((state: RootState) => state.reviews);
+
   useEffect(() => {
     dispatch(fetchHotels());
     dispatch(fetchRooms());
     dispatch(getAllImages());
+    dispatch(fetchReviews());
   }, [dispatch, id]);
 
   const hotel = hotels.find(
@@ -66,6 +79,10 @@ const HotelDetailCard: React.FC = () => {
     (image) => String(image.hotel_id) === String(id)
   );
 
+  const hotelReviews = reviews.filter(
+    (review) => String(review.hotel_id) === String(id)
+  );
+
   const primaryImage =
     hotelImages.find(
       (image) =>
@@ -78,11 +95,70 @@ const HotelDetailCard: React.FC = () => {
 
   const hotelImageUrl = getImageUrl(hotelImagePath);
 
+  const averageRating =
+    hotelReviews.length > 0
+      ? hotelReviews.reduce(
+          (total, review) => total + Number(review.rating),
+          0
+        ) / hotelReviews.length
+      : 0;
+
   const handleBookNow = () => {
     document.getElementById("rooms")?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
+  };
+
+  const handleReviewSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+    setReviewMessage("");
+
+    if (!localStorage.getItem("Token")) {
+      setReviewMessage("Please log in before submitting a review.");
+      return;
+    }
+
+    if (!id || !Number.isInteger(Number(id))) {
+      setReviewMessage("The hotel ID is invalid.");
+      return;
+    }
+
+    if (reviewRating < 1 || reviewRating > 5) {
+      setReviewMessage("Please select a rating from 1 to 5.");
+      return;
+    }
+
+    if (!reviewComment.trim()) {
+      setReviewMessage("Please write a comment before submitting.");
+      return;
+    }
+
+    setReviewSubmitting(true);
+
+    try {
+      await dispatch(
+        createReview({
+          hotel_id: Number(id),
+          rating: reviewRating,
+          comment: reviewComment.trim(),
+        })
+      ).unwrap();
+
+      setReviewComment("");
+      setReviewRating(5);
+      setReviewMessage("Your review was submitted successfully.");
+    } catch (error) {
+      setReviewMessage(
+        typeof error === "string"
+          ? error
+          : "Unable to submit your review. Please try again."
+      );
+    } finally {
+      setReviewSubmitting(false);
+    }
   };
 
   if (hotelsLoading && hotels.length === 0) {
@@ -121,6 +197,7 @@ const HotelDetailCard: React.FC = () => {
 
   return (
     <main className={styles.detailsPage}>
+      {/* HOTEL DETAILS */}
       <section className={styles.hotelSection}>
         <div className={styles.imageContainer}>
           {hotelImageUrl ? (
@@ -128,12 +205,12 @@ const HotelDetailCard: React.FC = () => {
               src={hotelImageUrl}
               alt={hotel.hotel_name}
               className={styles.hotelImage}
-              onError={() => {
+              onError={() =>
                 console.error(
                   "Hotel image failed to load:",
                   hotelImageUrl
-                );
-              }}
+                )
+              }
             />
           ) : (
             <p>No hotel image available.</p>
@@ -141,9 +218,7 @@ const HotelDetailCard: React.FC = () => {
         </div>
 
         <div className={styles.hotelInfo}>
-          <span className={styles.eyebrow}>
-            HOTEL DETAILS
-          </span>
+          <span className={styles.eyebrow}>HOTEL DETAILS</span>
 
           <h1 className={styles.hotelName}>
             {hotel.hotel_name}
@@ -173,36 +248,23 @@ const HotelDetailCard: React.FC = () => {
         </div>
       </section>
 
-      {/* // ROOMS  */}
-      <section
-        id="rooms"
-        className={styles.roomsSection}
-      >
+      {/* ROOMS */}
+      <section id="rooms" className={styles.roomsSection}>
         <div className={styles.sectionHeader}>
           <div>
-            <span className={styles.eyebrow}>
-              ACCOMMODATION
-            </span>
-
+            <span className={styles.eyebrow}>ACCOMMODATION</span>
             <h2>Rooms at {hotel.hotel_name}</h2>
-
-            <p>
-              Explore the available room options and prices.
-            </p>
+            <p>Explore the available room options and prices.</p>
           </div>
 
           <span className={styles.roomCount}>
             {hotelRooms.length}{" "}
-            {hotelRooms.length === 1
-              ? "room type"
-              : "room types"}
+            {hotelRooms.length === 1 ? "room type" : "room types"}
           </span>
         </div>
 
         {roomsLoading && rooms.length === 0 && (
-          <p className={styles.statusMessage}>
-            Loading rooms...
-          </p>
+          <p className={styles.statusMessage}>Loading rooms...</p>
         )}
 
         {roomsError && (
@@ -217,8 +279,7 @@ const HotelDetailCard: React.FC = () => {
             <div className={styles.emptyState}>
               <h3>No rooms listed yet</h3>
               <p>
-                There are currently no rooms listed for
-                this hotel.
+                There are currently no rooms listed for this hotel.
               </p>
             </div>
           )}
@@ -230,28 +291,22 @@ const HotelDetailCard: React.FC = () => {
               : "";
 
             const roomImageUrl = getImageUrl(roomImagePath);
-
-            const isUnavailable =
-              Number(room.quantity) < 1;
+            const isUnavailable = Number(room.quantity) < 1;
 
             return (
-              <article
-                key={room.id}
-                className={styles.roomCard}
-              >
-                {/* // ROOM IMAGE  */}
+              <article key={room.id} className={styles.roomCard}>
                 <div className={styles.roomImageContainer}>
                   {roomImageUrl ? (
                     <img
                       src={roomImageUrl}
                       alt={room.room_type}
                       className={styles.roomImage}
-                      onError={() => {
+                      onError={() =>
                         console.error(
                           "Room image failed to load:",
                           roomImageUrl
-                        );
-                      }}
+                        )
+                      }
                     />
                   ) : (
                     <p>No room image available.</p>
@@ -260,18 +315,13 @@ const HotelDetailCard: React.FC = () => {
 
                 <div className={styles.roomHeader}>
                   <div>
-                    <span className={styles.roomLabel}>
-                      ROOM TYPE
-                    </span>
-
+                    <span className={styles.roomLabel}>ROOM TYPE</span>
                     <h3>{room.room_type}</h3>
                   </div>
 
                   <span className={styles.capacity}>
                     {room.capacity}{" "}
-                    {Number(room.capacity) === 1
-                      ? "guest"
-                      : "guests"}
+                    {Number(room.capacity) === 1 ? "guest" : "guests"}
                   </span>
                 </div>
 
@@ -281,10 +331,7 @@ const HotelDetailCard: React.FC = () => {
 
                 <div className={styles.roomFacilities}>
                   <h4>Facilities</h4>
-                  <p>
-                    {room.facilities ||
-                      "No facilities listed"}
-                  </p>
+                  <p>{room.facilities || "No facilities listed"}</p>
                 </div>
 
                 <div className={styles.roomFooter}>
@@ -292,12 +339,8 @@ const HotelDetailCard: React.FC = () => {
                     <span className={styles.priceLabel}>
                       Price per night
                     </span>
-
                     <p className={styles.price}>
-                      R
-                      {Number(
-                        room.price_per_night
-                      ).toFixed(2)}
+                      R{Number(room.price_per_night).toFixed(2)}
                     </p>
                   </div>
 
@@ -313,9 +356,7 @@ const HotelDetailCard: React.FC = () => {
                   disabled={isUnavailable}
                   onClick={() => setSelectedRoom(room)}
                 >
-                  {isUnavailable
-                    ? "Unavailable"
-                    : "Book This Room"}
+                  {isUnavailable ? "Unavailable" : "Book This Room"}
                 </button>
               </article>
             );
@@ -327,12 +368,8 @@ const HotelDetailCard: React.FC = () => {
       <section className={styles.locationSection}>
         <div className={styles.sectionHeader}>
           <div>
-            <span className={styles.eyebrow}>
-              FIND US
-            </span>
-
+            <span className={styles.eyebrow}>FIND US</span>
             <h2>Hotel location</h2>
-
             <p>
               {hotel.address}, {hotel.city}
             </p>
@@ -357,6 +394,150 @@ const HotelDetailCard: React.FC = () => {
         >
           Get directions ↗
         </a>
+      </section>
+
+      {/* HOTEL REVIEWS */}
+      <section className={styles.reviewsSection} id="reviews">
+        <div className={styles.sectionHeader}>
+          <div>
+            <span className={styles.eyebrow}>GUEST FEEDBACK</span>
+            <h2>Reviews for {hotel.hotel_name}</h2>
+            <p>
+              Read about other guests' experiences or share your own.
+            </p>
+          </div>
+
+          <div className={styles.reviewSummary}>
+            <strong>
+              {hotelReviews.length > 0
+                ? averageRating.toFixed(1)
+                : "—"}
+              <span> / 5</span>
+            </strong>
+            <span>
+              {hotelReviews.length}{" "}
+              {hotelReviews.length === 1 ? "review" : "reviews"}
+            </span>
+          </div>
+        </div>
+
+        {/* SUBMIT A REVIEW */}
+        <form
+          className={styles.reviewForm}
+          onSubmit={handleReviewSubmit}
+        >
+          <h3>Write a review</h3>
+
+          <label htmlFor="reviewRating">Your rating</label>
+          <select
+            id="reviewRating"
+            value={reviewRating}
+            onChange={(event) =>
+              setReviewRating(Number(event.target.value))
+            }
+            disabled={reviewSubmitting}
+          >
+            <option value={5}>★★★★★ — Excellent</option>
+            <option value={4}>★★★★ — Very good</option>
+            <option value={3}>★★★ — Good</option>
+            <option value={2}>★★ — Fair</option>
+            <option value={1}>★ — Poor</option>
+          </select>
+
+          <label htmlFor="reviewComment">Your comments</label>
+          <textarea
+            id="reviewComment"
+            value={reviewComment}
+            onChange={(event) => setReviewComment(event.target.value)}
+            placeholder="Tell us about your stay..."
+            rows={4}
+            maxLength={1000}
+            required
+            disabled={reviewSubmitting}
+          />
+
+          {reviewMessage && (
+            <p
+              className={
+                reviewMessage.includes("successfully")
+                  ? styles.reviewSuccess
+                  : styles.reviewError
+              }
+              role="status"
+            >
+              {reviewMessage}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className={styles.bookButton}
+            disabled={reviewSubmitting}
+          >
+            {reviewSubmitting ? "Submitting..." : "Submit Review"}
+          </button>
+
+          <p className={styles.reviewHint}>
+            You must be logged in to submit a review.
+          </p>
+        </form>
+
+        {/* EXISTING REVIEWS */}
+        <div className={styles.reviewsList}>
+          {reviewsLoading && reviews.length === 0 && (
+            <p className={styles.statusMessage}>Loading reviews...</p>
+          )}
+
+          {reviewsError && (
+            <p className={styles.errorMessage}>
+              Unable to load reviews: {reviewsError}
+            </p>
+          )}
+
+          {!reviewsLoading &&
+            !reviewsError &&
+            hotelReviews.length === 0 && (
+              <div className={styles.emptyState}>
+                <h3>No reviews yet</h3>
+                <p>Be the first guest to review this hotel.</p>
+              </div>
+            )}
+
+          {hotelReviews.map((review) => (
+            <article key={review.id} className={styles.reviewCard}>
+              <div className={styles.reviewCardHeader}>
+                <div>
+                  <h4>Guest #{review.user_id}</h4>
+                  <span className={styles.reviewDate}>
+                    {new Date(review.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+
+                <span className={styles.reviewStars}>
+                  {"★".repeat(
+                    Math.max(
+                      0,
+                      Math.min(5, Number(review.rating) || 0)
+                    )
+                  )}
+                  <span className={styles.emptyStars}>
+                    {"★".repeat(
+                      5 -
+                        Math.max(
+                          0,
+                          Math.min(5, Number(review.rating) || 0)
+                        )
+                    )}
+                  </span>
+                </span>
+              </div>
+
+              <p className={styles.reviewComment}>
+                {review.comment}
+              </p>
+            </article>
+          ))}
+        </div>
       </section>
 
       {/* BOOKING MODAL */}

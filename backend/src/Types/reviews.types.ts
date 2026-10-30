@@ -7,4 +7,4 @@ export interface Reviews{
     created_at: Date;
 }
 
-export type NewReviews = Omit<Reviews, "id">
+export type NewReviews = Omit<Reviews, "id" | "created_at">;

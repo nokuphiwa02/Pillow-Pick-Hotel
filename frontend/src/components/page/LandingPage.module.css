@@ -1,6 +1,196 @@
+
+.searchSection {
+  padding: 30px 20px;
+  background: #f5f9f6;
+}
+
+.searchContent {
+  max-width: 850px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.searchContent h2 {
+  margin: 0 0 8px;
+  color: #133824;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.searchContent p {
+  margin: 0 0 22px;
+  color: #64756a;
+  font-size: 15px;
+}
+
+.searchForm {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+}
+
+.searchInputWrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  padding: 0 16px;
+  background: #ffffff;
+  border: 1px solid #d3e2d8;
+  border-radius: 9px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.searchInputWrapper:focus-within {
+  border-color: #2c5e43;
+  box-shadow: 0 0 0 3px rgba(44, 94, 67, 0.12);
+}
+
+.searchIcon {
+  margin-right: 10px;
+  font-size: 19px;
+}
+
+.searchInputWrapper input {
+  width: 100%;
+  min-width: 0;
+  padding: 14px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #133824;
+  font-size: 15px;
+}
+
+.searchInputWrapper input::placeholder {
+  color: #89988e;
+}
+
+.searchButton,
+.clearButton {
+  padding: 13px 24px;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.searchButton {
+  border: 1px solid #c6a15b;
+  background: #245c43;
+  color: #ffffff;
+}
+
+.searchButton:hover {
+  background: #133824;
+  transform: translateY(-1px);
+}
+
+.clearButton {
+  border: 1px solid #d3e2d8;
+  background: #ffffff;
+  color: #245c43;
+}
+
+.clearButton:hover {
+  background: #e8f4ed;
+}
+
 .cardGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
+  padding: 28px 20px;
+  align-items: start;
+}
+
+.resultsHeading {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.resultsHeading h2 {
+  margin: 0;
+  color: #133824;
+  font-size: 24px;
+}
+
+.resultsCount {
+  color: #64756a;
+  font-size: 14px;
+}
+
+.statusText,
+.errorText,
+.noResults {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.statusText {
+  color: #64756a;
+  padding: 25px 10px;
+}
+
+.errorText {
+  color: #b42318;
   padding: 20px;
+}
+
+.noResults {
+  padding: 45px 20px;
+  background: #f5f9f6;
+  border: 1px solid #dce9e0;
+  border-radius: 12px;
+}
+
+.noResults h3 {
+  margin: 0 0 10px;
+  color: #133824;
+  font-size: 22px;
+}
+
+.noResults p {
+  margin: 0 0 20px;
+  color: #64756a;
+}
+
+@media (max-width: 600px) {
+  .searchSection {
+    padding: 24px 16px;
+  }
+
+  .searchContent h2 {
+    font-size: 23px;
+  }
+
+  .searchForm {
+    flex-direction: column;
+  }
+
+  .searchInputWrapper {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .searchButton,
+  .clearButton {
+    width: 100%;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+    padding: 20px 16px;
+  }
+
+  .resultsHeading h2 {
+    font-size: 21px;
+  }
 }

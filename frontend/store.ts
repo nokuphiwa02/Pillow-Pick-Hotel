@@ -8,6 +8,8 @@ import bookingReducer from './src/redux/BookingSlice'
 import profileReducer from './src/redux/ProfileSlice'
 import PaymentReducer  from './src/redux/PaymentSlice'
 import FavourateReducer from './src/redux/FavourateSlice'
+import ReviewReducer from './src/redux/ReviewSlice'
+import userReducer from './src/redux/UserSlice'
 
 
 
@@ -21,7 +23,9 @@ export const store = configureStore({
     bookings: bookingReducer,
     profile: profileReducer,
     payments: PaymentReducer,
-   favourates: FavourateReducer,
+    favourates: FavourateReducer,
+    reviews: ReviewReducer,
+    users: userReducer,
 }
 })
 

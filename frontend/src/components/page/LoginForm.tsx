@@ -19,20 +19,32 @@ export const LoginForm = () => {
     navigate("/dashboard");
   };
 
-  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  
+const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    if (email && password) {
-      const result = await dispatch(LoginThunk({ email, password }));
+  if (!email || !password) {
+    alert("Please enter both email and password.");
+    return;
+  }
 
-      if (LoginThunk.fulfilled.match(result)) {
-        alert("Login successful");
-        navigate('/admin');
-      }
+  const result = await dispatch(LoginThunk({ email, password }));
+
+  if (LoginThunk.fulfilled.match(result)) {
+    alert("Login successful");
+
+    const user = result.payload;
+
+    if (user.role === "admin") {
+      navigate("/admin");
+    } else if (user.role === "guest") {
+      navigate("/Guestdashboard");
     } else {
-      alert("Please enter both email and password.");
+      alert("User role not recognized. Please contact the administrator.");
     }
-  };
+  }
+};
+
 
   return (
     <form onSubmit={handleSave} className={styles.loginContainer}>

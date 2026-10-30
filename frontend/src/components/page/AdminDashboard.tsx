@@ -8,7 +8,14 @@ import styles from './AdminDashboard.module.css';
 import type { RootState, AppDispatch } from '../../../store';
 import { fetchHotels } from '../../redux/HotelSlice';
 import { fetchRooms } from '../../redux/RoomSlice';
-import { fetchBookings } from '../../redux/BookingSlice';
+import {
+  fetchBookings,
+  deleteBooking,
+} from '../../redux/BookingSlice';
+import {
+  fetchUsers,
+  deleteUser,
+} from '../../redux/UserSlice';
 
 type DashboardView =
   | 'overview'
@@ -23,7 +30,12 @@ export const AdminDashboard: React.FC = () => {
   const [currentView, setCurrentView] =
     useState<DashboardView>('overview');
 
-  // Get actual hotel and room records from Redux
+  const [deletingBookingId, setDeletingBookingId] =
+    useState<number | null>(null);
+
+  const [deletingUserId, setDeletingUserId] =
+    useState<number | null>(null);
+
   const hotels = useSelector(
     (state: RootState) => state.hotels.hotels
   );
@@ -31,8 +43,8 @@ export const AdminDashboard: React.FC = () => {
   const rooms = useSelector(
     (state: RootState) => state.rooms.rooms
   );
-   
-   const bookings = useSelector(
+
+  const bookings = useSelector(
     (state: RootState) => state.bookings.bookings
   );
 
@@ -44,13 +56,102 @@ export const AdminDashboard: React.FC = () => {
     (state: RootState) => state.bookings.error
   );
 
+  const users = useSelector(
+    (state: RootState) => state.users.users
+  );
 
-  // Fetch the latest records when the dashboard loads
+  const usersLoading = useSelector(
+    (state: RootState) => state.users.loading
+  );
+
+  const usersError = useSelector(
+    (state: RootState) => state.users.error
+  );
+
   useEffect(() => {
     dispatch(fetchHotels());
     dispatch(fetchRooms());
     dispatch(fetchBookings());
+    dispatch(fetchUsers());
   }, [dispatch]);
+
+  // DELETE BOOKING
+  const handleDeleteBooking = async (
+    bookingId: number
+  ) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete booking #${bookingId}? This action cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    setDeletingBookingId(bookingId);
+
+    try {
+      const result = await dispatch(
+        deleteBooking(bookingId)
+      );
+
+      if (deleteBooking.fulfilled.match(result)) {
+        window.alert(
+          `Booking #${bookingId} was deleted successfully.`
+        );
+      } else {
+        window.alert(
+          String(
+            result.payload ??
+              'Failed to delete booking. Please try again.'
+          )
+        );
+      }
+    } catch {
+      window.alert(
+        'An unexpected error occurred while deleting the booking.'
+      );
+    } finally {
+      setDeletingBookingId(null);
+    }
+  };
+
+  // DELETE USER
+  const handleDeleteUser = async (userId: number) => {
+    const selectedUser = users.find(
+      (user) => user.id === userId
+    );
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${
+        selectedUser?.name || `user #${userId}`
+      }? This action cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    setDeletingUserId(userId);
+
+    try {
+      const result = await dispatch(deleteUser(userId));
+
+      if (deleteUser.fulfilled.match(result)) {
+        window.alert(
+          `User #${userId} was deleted successfully.`
+        );
+      } else {
+        window.alert(
+          String(
+            result.payload ??
+              'Failed to delete user. Please try again.'
+          )
+        );
+      }
+    } catch {
+      window.alert(
+        'An unexpected error occurred while deleting the user.'
+      );
+    } finally {
+      setDeletingUserId(null);
+    }
+  };
 
   const stats = [
     {
@@ -65,13 +166,13 @@ export const AdminDashboard: React.FC = () => {
     },
     {
       title: 'BOOKINGS',
-      value: 0,
+      value: bookings.length,
       view: 'bookings' as DashboardView,
     },
     {
-      title: 'USERS',
-      value: 0,
-      view: 'users' as DashboardView,
+      title: "USERS",
+      value: users.length,
+      route: "/admin/users",
     },
   ];
 
@@ -81,18 +182,28 @@ export const AdminDashboard: React.FC = () => {
         return (
           <>
             <header className={styles.welcomeHeader}>
-              Welcome back to Pillow-Pick Admin.
-              <img
-                src={profile}
-                alt="profile"
-                className={styles.profile}
-              />
+              Welcome back to HavenStay Admin.
+
+              <button
+                type="button"
+                className={styles.profileButton}
+                onClick={() => navigate('/profile')}
+                title="My Profile"
+                aria-label="Open my profile"
+              >
+                <img
+                  src={profile}
+                  alt="Profile"
+                  className={styles.profile}
+                />
+              </button>
             </header>
 
             <section className={styles.statsGrid}>
               {stats.map((stat) => (
                 <button
                   key={stat.title}
+                  type="button"
                   className={styles.statCard}
                   onClick={() => {
                     if (stat.route) {
@@ -117,6 +228,7 @@ export const AdminDashboard: React.FC = () => {
         return (
           <section className={styles.pageContent}>
             <h2>📅 Bookings Records</h2>
+
             <p className={styles.pageDescription}>
               View and manage customer bookings.
             </p>
@@ -151,6 +263,7 @@ export const AdminDashboard: React.FC = () => {
                       <th>Total Price</th>
                       <th>Status</th>
                       <th>Created At</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
 
@@ -161,20 +274,51 @@ export const AdminDashboard: React.FC = () => {
                         <td>{booking.user_id}</td>
                         <td>{booking.room_id}</td>
                         <td>
-                          {String(booking.check_in).slice(0, 10)}
+                          {String(
+                            booking.check_in
+                          ).slice(0, 10)}
                         </td>
                         <td>
-                          {String(booking.check_out).slice(0, 10)}
+                          {String(
+                            booking.check_out
+                          ).slice(0, 10)}
                         </td>
                         <td>{booking.guest_number}</td>
                         <td>
-                          R{Number(booking.total_price).toFixed(2)}
+                          R
+                          {Number(
+                            booking.total_price
+                          ).toFixed(2)}
                         </td>
                         <td>{booking.booking_status}</td>
                         <td>
                           {booking.created_at
-                            ? String(booking.created_at).slice(0, 10)
+                            ? String(
+                                booking.created_at
+                              ).slice(0, 10)
                             : '—'}
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className={
+                              styles.deleteBookingButton
+                            }
+                            onClick={() =>
+                              handleDeleteBooking(
+                                booking.id
+                              )
+                            }
+                            disabled={
+                              deletingBookingId ===
+                              booking.id
+                            }
+                          >
+                            {deletingBookingId ===
+                            booking.id
+                              ? 'Deleting...'
+                              : 'Delete'}
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -183,44 +327,83 @@ export const AdminDashboard: React.FC = () => {
               </div>
             )}
           </section>
-
         );
 
       case 'users':
         return (
           <section className={styles.pageContent}>
             <h2>👥 Registered Application Users</h2>
+
             <p className={styles.pageDescription}>
-              Viewing registered user accounts.
+              View and manage registered HavenStay users.
             </p>
 
-            <div className={styles.tableWrapper}>
-              <table className={styles.dataTable}>
-                <thead>
-                  <tr>
-                    <th>User ID</th>
-                    <th>Full Name</th>
-                    <th>Email Reference</th>
-                    <th>Account Status</th>
-                  </tr>
-                </thead>
+            {usersLoading && <p>Loading users...</p>}
 
-                <tbody>
-                  <tr>
-                    <td>ID: 20</td>
-                    <td>
-                      <strong>Nokuphiwa Shange</strong>
-                    </td>
-                    <td>nokuphiwashange@example.com</td>
-                    <td>
-                      <span className={styles.badge}>
-                        Active Account
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            {usersError && (
+              <p role="alert">
+                Failed to load users: {usersError}
+              </p>
+            )}
+
+            {!usersLoading &&
+              !usersError &&
+              users.length === 0 && (
+                <p>No registered users found.</p>
+              )}
+
+            {users.length > 0 && (
+              <div className={styles.tableWrapper}>
+                <table className={styles.dataTable}>
+                  <thead>
+                    <tr>
+                      <th>User ID</th>
+                      <th>Full Name</th>
+                      <th>Email Address</th>
+                      <th>Role</th>
+                      <th>Registration Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {users.map((user) => (
+                      <tr key={user.id}>
+                        <td>{user.id}</td>
+                        <td>{user.name || '—'}</td>
+                        <td>{user.email || '—'}</td>
+                        <td>{user.role || 'guest'}</td>
+                        <td>
+                          {user.createdat
+                            ? String(
+                                user.createdat
+                              ).slice(0, 10)
+                            : '—'}
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className={
+                              styles.deleteBookingButton
+                            }
+                            onClick={() =>
+                              handleDeleteUser(user.id)
+                            }
+                            disabled={
+                              deletingUserId === user.id
+                            }
+                          >
+                            {deletingUserId === user.id
+                              ? 'Deleting...'
+                              : 'Delete'}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </section>
         );
 
@@ -234,8 +417,11 @@ export const AdminDashboard: React.FC = () => {
       <aside className={styles.sidebar}>
         <nav className={styles.sidebarNav}>
           <button
+            type="button"
             className={`${styles.sidebarLinkBtn} ${
-              currentView === 'overview' ? styles.active : ''
+              currentView === 'overview'
+                ? styles.active
+                : ''
             }`}
             onClick={() => setCurrentView('overview')}
           >
@@ -243,13 +429,17 @@ export const AdminDashboard: React.FC = () => {
           </button>
 
           <button
+            type="button"
             className={styles.sidebarLinkBtn}
-            onClick={() => navigate('/admin/accommodation')}
+            onClick={() =>
+              navigate('/admin/accommodation')
+            }
           >
             🏠 Accommodations
           </button>
 
           <button
+            type="button"
             className={styles.sidebarLinkBtn}
             onClick={() => navigate('/admin/rooms')}
           >
@@ -257,17 +447,23 @@ export const AdminDashboard: React.FC = () => {
           </button>
 
           <button
+            type="button"
             className={`${styles.sidebarLinkBtn} ${
-              currentView === 'bookings' ? styles.active : ''
+              currentView === 'bookings'
+                ? styles.active
+                : ''
             }`}
             onClick={() => setCurrentView('bookings')}
           >
-            📞 Bookings
+            📅 Bookings
           </button>
 
           <button
+            type="button"
             className={`${styles.sidebarLinkBtn} ${
-              currentView === 'users' ? styles.active : ''
+              currentView === 'users'
+                ? styles.active
+                : ''
             }`}
             onClick={() => setCurrentView('users')}
           >

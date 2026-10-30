@@ -1,0 +1,145 @@
+/* .adminLayout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f8f6;
+  color: #183b2a;
+}
+
+.sidebar {
+  width: 245px;
+  min-width: 245px;
+  background: #2c5e43;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 18px;
+  box-sizing: border-box;
+}
+
+.logo {
+  margin: 0 0 38px;
+  text-align: center;
+  font-size: 27px;
+  font-weight: 700;
+  color: #dff8ee;
+}
+
+.sidebarTitle {
+  margin: 0 12px 14px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #c4e6d5;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.navLink,
+.activeLink,
+.backLink {
+  display: block;
+  padding: 13px 14px;
+  border-radius: 9px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.navLink {
+  color: #ffffff;
+}
+
+.navLink:hover {
+  background: rgba(223, 248, 238, 0.14);
+}
+
+.activeLink {
+  background: #dff8ee;
+  color: #183b2a;
+  font-weight: 700;
+}
+
+.backLink {
+  margin-top: auto;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  text-align: center;
+}
+
+.backLink:hover {
+  background: rgba(223, 248, 238, 0.14);
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.topBar {
+  min-height: 82px;
+  padding: 18px 30px;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e9e3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.topBar h1 {
+  margin: 0;
+  font-size: 23px;
+}
+
+.topBar span {
+  color: #61766a;
+  font-size: 13px;
+}
+
+.pageContent {
+  padding: 28px;
+}
+
+@media (max-width: 768px) {
+  .adminLayout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    padding: 18px;
+  }
+
+  .logo {
+    margin-bottom: 20px;
+  }
+
+  .navigation {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .navLink,
+  .activeLink {
+    padding: 10px;
+  }
+
+  .backLink {
+    margin-top: 18px;
+  }
+
+  .topBar {
+    padding: 18px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pageContent {
+    padding: 16px;
+  }
+} */
