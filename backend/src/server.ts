@@ -59,8 +59,8 @@ const startServer = async () => {
   app.use("/api", reviewRoutes);
   app.use("/api", favouriteRoutes);
   app.use("/api",hotelImageRoutes);
-  app.use("/api",profileRoutes);
- app.use("/api",PaymentRoutes)
+  app.use("/api", profileRoutes);
+  app.use("/api",PaymentRoutes)
 
 
 app.listen(PORT, () => {
