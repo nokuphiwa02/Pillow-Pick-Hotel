@@ -63,7 +63,6 @@ const Checkout = () => {
     checkIn,
     checkOut,
     guestNumber,
-    estimatedTotal,
   } = checkout;
 
   const nights = Math.round(

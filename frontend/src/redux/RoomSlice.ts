@@ -54,7 +54,7 @@ const getErrorMessage = async (
 
 // CREATE ROOM
 
-type CreateRoomPayload = Omit<Room, "id">;
+// type CreateRoomPayload = Omit<Room, "id">;
 
 
 export const createRoom = createAsyncThunk<
