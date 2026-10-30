@@ -5,6 +5,6 @@ const router = Router();
 
 router.post("/profile", addProfile)
 router.get("/profile/:id",getProfileById)
-router.put("/profile",updateProfile)
+router.put("/profile/:id", updateProfile);
 
 export default router;
