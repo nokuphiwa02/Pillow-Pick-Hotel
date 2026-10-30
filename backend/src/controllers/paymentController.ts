@@ -104,6 +104,87 @@ export const addPayment = async (
   }
 };
 
+
+/**
+ * VERIFY PAYSTACK PAYMENT
+ * Called when Paystack redirects the guest back to HavenStay.
+ */
+export const verifyPayment = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const reference = String(req.query.reference ?? "").trim();
+
+    if (!reference) {
+      res.status(400).json({
+        message: "Payment reference is required.",
+      });
+      return;
+    }
+
+    const user = req.user;
+
+    if (!user?.id) {
+      res.status(401).json({
+        message: "User authentication required.",
+      });
+      return;
+    }
+
+    // Find the payment using the Paystack reference.
+    const payment = await paymentService.getPaymentByReference(
+      reference
+    );
+
+    if (!payment) {
+      res.status(404).json({
+        message: "Payment record not found.",
+      });
+      return;
+    }
+
+    // Guests may only verify their own payments.
+    if (Number(payment.user_id) !== Number(user.id)) {
+      res.status(403).json({
+        message: "You cannot verify another user's payment.",
+      });
+      return;
+    }
+
+    // Verify the transaction directly with Paystack.
+    const verifiedPayment =
+      await paymentService.verifyPaystackPayment(reference);
+
+    if (verifiedPayment.status !== "successful") {
+      res.status(200).json({
+        message:
+          verifiedPayment.status === "failed"
+            ? "Payment failed."
+            : verifiedPayment.status === "cancelled"
+              ? "Payment was cancelled."
+              : "Payment is still pending. Please check again.",
+        payment: verifiedPayment,
+        success: false,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Payment successful!",
+      payment: verifiedPayment,
+      success: true,
+    });
+  } catch (error: unknown) {
+    console.error("verifyPayment error:", error);
+
+    res.status(502).json({
+      message: "Unable to verify payment with Paystack.",
+    });
+  }
+};
+
+
 // GET ALL PAYMENTS — ADMIN ONLY
 export const getAllPayments = async (
   req: Request,
