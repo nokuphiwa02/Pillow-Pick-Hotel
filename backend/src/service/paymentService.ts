@@ -13,6 +13,19 @@ interface PaystackInitializeResponse {
     };
 }
 
+
+interface PaystackVerifyResponse {
+    status: boolean;
+    message: string;
+    data?: {
+        status: string;
+        reference: string;
+        amount: number;
+        currency: string;
+    };
+}
+
+
 // Create the payment status type and payments table
 export const createPaymentTables = async (): Promise<void> => {
     try {
@@ -125,14 +138,15 @@ export const initializePaystackPayment = async (
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                email,
-                amount: Math.round(amount * 100),
-                currency: "ZAR",
-                metadata: {
-                    payment_id: paymentId,
-                    booking_id: bookingId
-                }
-            })
+            email,
+            amount: Math.round(amount * 100),
+            currency: "ZAR",
+            callback_url: `${process.env.FRONTEND_URL}/payment-callback`,
+            metadata: {
+                payment_id: paymentId,
+                booking_id: bookingId
+            }
+        })
         }
     );
 
@@ -221,7 +235,131 @@ export const getPaymentByReference = async (
     );
 
     return (result.rows[0] as Payment) ?? null;
+        };
+        // Confirm a booking after Paystack verifies successful payment
+        const approveBookingAfterSuccessfulPayment = async (
+        bookingId: number
+        ): Promise<void> => {
+        const result = await query(
+            `UPDATE bookings
+            SET booking_status = 'Approve'
+            WHERE id = $1
+            RETURNING id`,
+            [bookingId]
+        );
+
+        if (result.rows.length === 0) {
+            throw new Error(
+            `Booking ${bookingId} was not found.`
+            );
+        }
+        };
+
+
+
+export const verifyPaystackPayment = async (
+    reference: string
+): Promise<Payment> => {
+    const secretKey = process.env.PAYSTACK_SECRET_KEY;
+
+    if (!secretKey) {
+        throw new Error("PAYSTACK_SECRET_KEY is missing from .env");
+    }
+
+    const payment = await getPaymentByReference(reference);
+
+    if (!payment) {
+        throw new Error("Payment reference not found.");
+    }
+
+    // Avoid changing a payment that has already succeeded.
+   if (payment.status === "successful") {
+  await approveBookingAfterSuccessfulPayment(
+    payment.booking_id
+  );
+
+  return payment;
+}
+
+    const response = await fetch(
+        `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+        {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${secretKey}`,
+                "Content-Type": "application/json"
+            }
+        }
+    );
+
+    const result =
+        await response.json() as PaystackVerifyResponse;
+
+    if (!response.ok || !result.status || !result.data) {
+        throw new Error(
+            result.message || "Unable to verify payment with Paystack."
+        );
+    }
+
+    const transaction = result.data;
+
+    // Confirm this is the exact transaction we initialized.
+    if (transaction.reference !== payment.transaction_reference) {
+        throw new Error("Payment reference does not match.");
+    }
+
+    // Paystack returns the amount in the currency's minor unit.
+    const expectedAmount = Math.round(Number(payment.amount) * 100);
+
+    if (
+        !Number.isFinite(expectedAmount) ||
+        transaction.amount !== expectedAmount ||
+        transaction.currency !== payment.currency
+    ) {
+        throw new Error("Payment amount or currency does not match.");
+    }
+
+    // Only mark successful after Paystack confirms success.
+    if (transaction.status === "success") {
+  const updatedPayment = await updatePaymentStatus(
+    payment.id,
+    "successful"
+  );
+
+  if (!updatedPayment) {
+    throw new Error("Could not update payment status.");
+  }
+
+  // Update the booking only after Paystack confirms payment.
+  await approveBookingAfterSuccessfulPayment(
+    payment.booking_id
+  );
+
+  return updatedPayment;
+}
+
+    if (
+        transaction.status === "failed" ||
+        transaction.status === "abandoned"
+    ) {
+        const updatedPayment = await updatePaymentStatus(
+            payment.id,
+            transaction.status === "abandoned"
+                ? "cancelled"
+                : "failed"
+        );
+
+        if (!updatedPayment) {
+            throw new Error("Could not update payment status.");
+        }
+
+        return updatedPayment;
+    }
+
+    // Keep pending/ongoing transactions pending.
+    return payment;
 };
+
 
 // Save the Paystack reference returned during initialization
 export const updatePaymentReference = async (
@@ -241,15 +379,17 @@ export const updatePaymentReference = async (
 };
 
 // Update payment status after verification
+
 export const updatePaymentStatus = async (
     paymentId: number,
     status: Payment["status"]
 ): Promise<Payment | null> => {
     const result = await query(
         `UPDATE payments
-         SET status = $1,
+         SET status = $1::payment_status,
              paid_at = CASE
-                 WHEN $1 = 'successful' THEN CURRENT_TIMESTAMP
+                 WHEN $1::text = 'successful'
+                 THEN CURRENT_TIMESTAMP
                  ELSE paid_at
              END,
              updated_at = CURRENT_TIMESTAMP
@@ -260,6 +400,7 @@ export const updatePaymentStatus = async (
 
     return (result.rows[0] as Payment) ?? null;
 };
+
 
 // Delete a payment record
 export const deletePayment = async (
