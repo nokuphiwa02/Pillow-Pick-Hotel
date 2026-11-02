@@ -25,7 +25,7 @@ const initialState: HotelState = {
   error: null,
 };
 
-const SERVER_URL_API = '/api/hotels'; 
+// const SERVER_URL_API = '/api/hotels'; 
 
 
 export const createHotel = createAsyncThunk(
@@ -65,7 +65,7 @@ export const fetchHotels = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('Token'); 
-      const response = await fetch(SERVER_URL_API, {
+      const response = await fetch('/api/hotels', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -91,7 +91,7 @@ export const updateHotelById = createAsyncThunk(
   async ({ id, hotelData }: { id: number; hotelData: any }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('Token'); 
-      const response = await fetch(`${SERVER_URL_API}/${id}`, {
+      const response = await fetch(`/api/hotels/${id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -118,7 +118,7 @@ export const deleteHotelById = createAsyncThunk(
   async (id: number, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('Token');
-      const response = await fetch(`${SERVER_URL_API}/${id}`, {
+      const response = await fetch(`/api/hotels/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

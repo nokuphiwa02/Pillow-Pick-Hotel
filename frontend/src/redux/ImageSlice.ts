@@ -1,7 +1,7 @@
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-const SERVER_URL_API = "http://localhost:5000/api/hotelImage";
+// const SERVER_URL_API = "http://localhost:5000/api/hotelImage";
 
 export interface HotelImage {
   id: number;
@@ -58,7 +58,7 @@ export const getAllImages = createAsyncThunk<
   { rejectValue: string }
 >("images/getAllImages", async (_, { rejectWithValue }) => {
   try {
-    const response = await fetch(SERVER_URL_API, {
+    const response = await fetch('/api/hotelImage', {
       headers: getAuthHeaders(),
     });
 
@@ -81,7 +81,7 @@ export const getImageById = createAsyncThunk<
   { rejectValue: string }
 >("images/getImageById", async (id, { rejectWithValue }) => {
   try {
-    const response = await fetch(`${SERVER_URL_API}/${id}`, {
+    const response = await fetch(`/api/hotelImage/${id}`, {
       headers: getAuthHeaders(),
     });
 
@@ -113,7 +113,7 @@ export const addHotelImage = createAsyncThunk<
       formData.append("pictures", file);
     });
 
-    const response = await fetch(SERVER_URL_API, {
+    const response = await fetch('/api/hotelImage', {
       method: "POST",
       headers: getAuthHeaders(),
       body: formData,
@@ -141,7 +141,7 @@ export const updateHotelImage = createAsyncThunk<
   { rejectValue: string }
 >("images/updateHotelImage", async ({ id, data }, { rejectWithValue }) => {
   try {
-    const response = await fetch(`${SERVER_URL_API}/${id}`, {
+    const response = await fetch(`/api/hotelImage/${id}`, {
       method: "PUT",
       headers: {
         ...getAuthHeaders(),
@@ -169,7 +169,7 @@ export const deleteHotelImage = createAsyncThunk<
   { rejectValue: string }
 >("images/deleteHotelImage", async (id, { rejectWithValue }) => {
   try {
-    const response = await fetch(`${SERVER_URL_API}/${id}`, {
+    const response = await fetch(`/api/hotelImage/${id}`, {
       method: "DELETE",
       headers: getAuthHeaders(),
     });
