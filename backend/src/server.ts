@@ -30,24 +30,29 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   app.use(express.json());
+  app.use(cors())
 
-  // 1. Configure allowed origins array
-  const allowedOrigins = [
-    process.env.FRONTEND_URL?.replace(/\/$/, ""),
-    "http://localhost:5173",
-  ].filter(Boolean) as string[];
+//   // 1. Configure allowed origins array
+//   const allowedOrigins = [
+//     process.env.FRONTEND_URL?.replace(/\/$/, ""),
+//     "http://localhost:5173",
+//   ].filter(Boolean) as string[];
 
-  // 2. Properly initialize CORS with your allowedOrigins array
-  app.use(cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true
-  }));
+//   // 2. Properly initialize CORS with your allowedOrigins array
+//   app.use(
+//   cors({
+//     origin(origin, callback) {
+//       // Allow requests without Origin for tools such as Thunder Client.
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Origin is not allowed by CORS."));
+//       }
+//     },
+//     credentials: true,
+//   }),
+// );
+
 
   app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
