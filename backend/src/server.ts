@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import cors from "cors"
+import cors from 'cors';
 import path from 'path'; 
 import { testDbConnection } from './config/database';
 import { createOAuthUserTable } from './service/oAuthoService';
@@ -12,8 +12,8 @@ import reviewRoutes from './routes/reviewRoutes';
 import favouriteRoutes from './routes/favouriteRoutes';
 import hotelImageRoutes from './routes/hotelImageRoutes';
 import profileRoutes from './routes/profileRoutes';
-import PaymentRoutes  from './routes/paymentRoutes';
-import { createHotelsTable } from './service/hotelService'
+import PaymentRoutes from './routes/paymentRoutes';
+import { createHotelsTable } from './service/hotelService';
 import { createRoomsTable } from './service/roomService';
 import { createBookingTables } from './service/bookingService';
 import { createReviewsTable } from './service/reviewService';
@@ -22,23 +22,42 @@ import { createHotelImageTable } from './service/hotelImageService';
 import { createProfileTable } from './service/profileService';
 import { createPaymentTables } from './service/paymentService';
 
-
 dotenv.config();
 
 const app = express();
+// Render automatically handles process.env.PORT, falling back to 5000 locally
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   app.use(express.json());
-  app.use(cors())
 
- app.use("/uploads", express.static("uploads"));
+  // 1. Configure allowed origins array
+  const allowedOrigins = [
+    process.env.FRONTEND_URL?.replace(/\/$/, ""),
+    "http://localhost:5173",
+  ].filter(Boolean) as string[];
 
-  await testDbConnection();
+  // 2. Properly initialize CORS with your allowedOrigins array
+  app.use(cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true
+  }));
 
-  const creatingTables = async () => {
+  app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+  // 3. Connect to database and sync tables sequentially
+  try {
+    await testDbConnection();
+    
+    console.log("Synchronizing database tables...");
     await createOAuthUserTable();
-    await createHotelsTable ();
+    await createHotelsTable();
     await createRoomsTable();
     await createBookingTables();
     await createReviewsTable();
@@ -46,26 +65,26 @@ const startServer = async () => {
     await createHotelImageTable();
     await createProfileTable();
     await createPaymentTables();
-
-
-
+    console.log("All tables checked/created successfully.");
+  } catch (error) {
+    console.error("Database initialization failed:", error);
   }
-  creatingTables();
- 
-  app.use("/api/autho",oAuthoRoutes);
-  app.use("/api",hotelRoutes );
-  app.use("/api",roomRoutes);
-  app.use("/api",bookingRoutes);
+
+  // 4. Register Route Handlers
+  app.use("/api/autho", oAuthoRoutes);
+  app.use("/api", hotelRoutes);
+  app.use("/api", roomRoutes);
+  app.use("/api", bookingRoutes);
   app.use("/api", reviewRoutes);
   app.use("/api", favouriteRoutes);
-  app.use("/api",hotelImageRoutes);
+  app.use("/api", hotelImageRoutes);
   app.use("/api", profileRoutes);
-  app.use("/api",PaymentRoutes)
+  app.use("/api", PaymentRoutes);
 
-
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+  // 5. Start Listener
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 };
 
-startServer()
+startServer();
