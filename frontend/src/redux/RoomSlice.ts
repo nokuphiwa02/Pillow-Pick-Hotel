@@ -31,7 +31,7 @@ const initialState: RoomState = {
   error: null,
 };
 
-const API_URL = "/api/rooms";
+const SERVER_URL_API = "/api/rooms";
 
 // Authorization headers
 const getAuthHeaders = (): HeadersInit => {
@@ -97,7 +97,7 @@ export const fetchRooms = createAsyncThunk<
   "rooms/fetchRooms",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(SERVER_URL_API, {
         method: "GET",
         headers: {
           ...getAuthHeaders(),
@@ -163,7 +163,7 @@ export const deleteRoomById = createAsyncThunk<
   "rooms/deleteRoom",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${SERVER_URL_API}/${id}`, {
         method: "DELETE",
         headers: getAuthHeaders(),
       });

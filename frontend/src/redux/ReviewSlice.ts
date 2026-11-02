@@ -28,7 +28,7 @@ const initialState: ReviewsState = {
   error: null,
 };
 
-const API_URL = "/api/reviews";
+const SERVER_URL_API = "/api/reviews";
 
 const getAuthHeaders = (): HeadersInit => {
   const token = localStorage.getItem("Token");
@@ -46,7 +46,7 @@ export const fetchReviews = createAsyncThunk<
   { rejectValue: string }
 >("reviews/fetchReviews", async (_, { rejectWithValue }) => {
   try {
-    const response = await fetch(API_URL);
+    const response = await fetch(SERVER_URL_API);
 
     const data = await response.json();
 
@@ -67,7 +67,7 @@ export const createReview = createAsyncThunk<
   { rejectValue: string }
 >("reviews/createReview", async (review, { rejectWithValue }) => {
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(SERVER_URL_API, {
       method: "POST",
       headers: getAuthHeaders(),
       body: JSON.stringify(review),
@@ -92,7 +92,7 @@ export const deleteReview = createAsyncThunk<
   { rejectValue: string }
 >("reviews/deleteReview", async (id, { rejectWithValue }) => {
   try {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${SERVER_URL_API}/${id}`, {
       method: "DELETE",
       headers: getAuthHeaders(),
     });

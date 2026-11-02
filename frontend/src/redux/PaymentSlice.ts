@@ -39,7 +39,7 @@ const initialState: PaymentState = {
   error: null,
 };
 
-const API_URL = "/api/payments";
+const SERVER_URL_API = "/api/payments";
 
 const getAuthHeaders = (): HeadersInit => {
   const token = localStorage.getItem("Token");
@@ -57,7 +57,7 @@ export const createPayment = createAsyncThunk<
   "payments/createPayment",
   async (paymentData, { rejectWithValue }) => {
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(SERVER_URL_API, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

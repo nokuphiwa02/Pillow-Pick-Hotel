@@ -40,7 +40,7 @@ const initialState: BookingState = {
   success: false,
 };
 
-const API_URL = "/api/bookings";
+const SERVER_URL_API = "/api/bookings";
 
 const getAuthHeaders = (): HeadersInit => {
   const token = localStorage.getItem("Token");
@@ -59,7 +59,7 @@ export const createBooking = createAsyncThunk<
   "bookings/createBooking",
   async (bookingData, { rejectWithValue }) => {
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(SERVER_URL_API, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export const fetchBookings = createAsyncThunk<
   "bookings/fetchBookings",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(SERVER_URL_API, {
         method: "GET",
         headers: {
           ...getAuthHeaders(),
@@ -125,7 +125,7 @@ export const fetchBookingById = createAsyncThunk<
   "bookings/fetchBookingById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${SERVER_URL_API}/${id}`, {
         method: "GET",
         headers: {
           ...getAuthHeaders(),
@@ -157,7 +157,7 @@ export const updateBooking = createAsyncThunk<
   "bookings/updateBooking",
   async ({ id, data: bookingData }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${SERVER_URL_API}/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -191,7 +191,7 @@ export const deleteBooking = createAsyncThunk<
   "bookings/deleteBooking",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${SERVER_URL_API}/${id}`, {
         method: "DELETE",
         headers: {
           ...getAuthHeaders(),

@@ -26,7 +26,7 @@ const initialState: UserState = {
 };
 
 // Keep the same API URL used by fetchUsers.
-const API_URL = "/api/autho/users";
+const SERVER_URL_API = "/api/autho/users";
 
 const getAuthHeaders = (): HeadersInit => {
   const token = localStorage.getItem("Token");
@@ -45,7 +45,7 @@ export const fetchUsers = createAsyncThunk<
   "users/fetchUsers",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(SERVER_URL_API, {
         method: "GET",
         headers: getAuthHeaders(),
       });
@@ -83,7 +83,7 @@ export const deleteUser = createAsyncThunk<
   async (userId, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `${API_URL}/${userId}`,
+        `${SERVER_URL_API}/${userId}`,
         {
           method: "DELETE",
           headers: getAuthHeaders(),

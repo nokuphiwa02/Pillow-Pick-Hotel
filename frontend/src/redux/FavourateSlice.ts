@@ -20,7 +20,7 @@ const initialState: FavouriteState = {
   error: null,
 };
 
-const API_URL = "/api/favourites";
+const SERVER_URL_API = "/api/favourites";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("Token");
@@ -57,7 +57,7 @@ export const fetchFavourites = createAsyncThunk<
   try {
     const userId = getLoggedInUserId();
 
-    const response = await fetch(`${API_URL}?user_id=${userId}`, {
+    const response = await fetch(`${SERVER_URL_API}?user_id=${userId}`, {
       headers: getAuthHeaders(),
     });
 
@@ -107,7 +107,7 @@ export const addFavourite = createAsyncThunk<
 
     console.log("Request body:", requestBody);
 
-    const response = await fetch(API_URL, {
+    const response = await fetch(SERVER_URL_API, {
       method: "POST",
       headers: getAuthHeaders(),
       body: JSON.stringify(requestBody),
@@ -143,7 +143,7 @@ export const removeFavourite = createAsyncThunk<
   { rejectValue: string }
 >("favourites/remove", async (favouriteId, { rejectWithValue }) => {
   try {
-    const response = await fetch(`${API_URL}/${favouriteId}`, {
+    const response = await fetch(`${SERVER_URL_API}/${favouriteId}`, {
       method: "DELETE",
       headers: getAuthHeaders(),
     });
