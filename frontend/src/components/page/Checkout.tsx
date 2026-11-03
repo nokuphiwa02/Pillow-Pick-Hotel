@@ -2,16 +2,18 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from"../../../store";
+import type { AppDispatch, RootState } from "../../../store";
 import { createPayment } from "../../redux/PaymentSlice";
 import type { Room } from "../../redux/RoomSlice";
 import styles from "./Checkout.module.css";
 
+interface Booking {
+  id: number;
+  [key: string]: unknown;
+}
+
 interface CheckoutState {
-  booking: {
-    id: number;
-    [key: string]: unknown;
-  };
+  booking: Booking;
   room: Room;
   hotelName: string;
   checkIn: string;
@@ -31,23 +33,56 @@ const Checkout = () => {
 
   const [message, setMessage] = useState("");
 
-  const checkout = location.state as CheckoutState | null;
+  // Get booking information passed from BookingModal.
+  const rawState = location.state as Record<string, any> | null;
 
+  // Debug: Check what information Checkout receives.
+  console.log("CHECKOUT LOCATION STATE:", rawState);
+
+  // Support common API response structures.
+  const bookingData =
+    rawState?.booking?.booking ??
+    rawState?.booking?.data ??
+    rawState?.booking ??
+    rawState?.data?.booking ??
+    rawState?.data ??
+    null;
+
+  const checkout: CheckoutState | null = rawState
+    ? {
+        booking: bookingData,
+        room: rawState.room,
+        hotelName: rawState.hotelName,
+        checkIn: rawState.checkIn,
+        checkOut: rawState.checkOut,
+        guestNumber: Number(rawState.guestNumber),
+        estimatedTotal: Number(rawState.estimatedTotal),
+      }
+    : null;
+
+  console.log("CHECKOUT BOOKING:", checkout?.booking);
+  console.log("CHECKOUT BOOKING ID:", checkout?.booking?.id);
+  console.log("CHECKOUT ROOM:", checkout?.room);
+  console.log("CHECKOUT HOTEL:", checkout?.hotelName);
+
+  // Validate booking information.
   if (
     !checkout?.booking?.id ||
-    !checkout.room ||
-    !checkout.hotelName ||
-    !checkout.checkIn ||
-    !checkout.checkOut
+    !checkout?.room ||
+    !checkout?.hotelName ||
+    !checkout?.checkIn ||
+    !checkout?.checkOut
   ) {
     return (
       <main className={styles.checkoutPage}>
         <section className={styles.card}>
           <h1>Checkout</h1>
+
           <p>
             Booking details are unavailable. Please select a room
             and confirm your booking first.
           </p>
+
           <button onClick={() => navigate("/")}>
             Browse Hotels
           </button>
@@ -86,16 +121,20 @@ const Checkout = () => {
 
       if (!createPayment.fulfilled.match(result)) {
         setMessage(
-          String(result.payload ?? "Unable to initialize payment.")
+          String(
+            result.payload ??
+              "Unable to initialize payment."
+          )
         );
         return;
       }
 
-      const authorizationUrl = result.payload.authorization_url;
+      const authorizationUrl =
+        result.payload.authorization_url;
 
       if (!authorizationUrl) {
         setMessage(
-          "Payment was created, but the Paystack checkout URL was not returned. Please check the payment backend."
+          "Payment was created, but the Paystack checkout URL was not returned."
         );
         return;
       }
@@ -114,8 +153,12 @@ const Checkout = () => {
       }
 
       window.location.assign(url.href);
-    } catch {
-      setMessage("Something went wrong. Please try again.");
+    } catch (err) {
+      console.error("Payment error:", err);
+
+      setMessage(
+        "Something went wrong while processing payment."
+      );
     }
   };
 
@@ -123,7 +166,9 @@ const Checkout = () => {
     <main className={styles.checkoutPage}>
       <section className={styles.card}>
         <p className={styles.eyebrow}>HAVENSTAY</p>
+
         <h1>Checkout</h1>
+
         <p className={styles.subtitle}>
           Review your booking before making payment.
         </p>
@@ -186,7 +231,7 @@ const Checkout = () => {
 
           {(error || message) && (
             <p className={styles.error} role="alert">
-              {message || error}
+              {message || String(error)}
             </p>
           )}
 
