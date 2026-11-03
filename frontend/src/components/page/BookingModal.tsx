@@ -102,6 +102,10 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
       const booking = bookingResult.payload;
 
+      console.log("BOOKING RESPONSE:", booking);
+      console.log("BOOKING ID:", booking?.id);
+      console.log("ROOM:", room);
+      console.log("HOTEL NAME:", hotelName);
       // Close the modal and navigate to Checkout.
       onClose();
 
