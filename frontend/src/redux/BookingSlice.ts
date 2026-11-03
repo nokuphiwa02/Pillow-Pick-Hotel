@@ -12,6 +12,11 @@ export interface Booking {
   created_at: string;
 }
 
+export interface BookingResponse {
+  message: string;
+  booking: Booking;
+}
+
 export interface CreateBookingPayload {
   room_id: number;
   check_in: string;

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import type { AppDispatch, RootState } from "../../../store";
 import { createBooking } from "../../redux/BookingSlice";
+import type { Booking } from "../../redux/BookingSlice";
 import type { Room } from "../../redux/RoomSlice";
 import styles from "./BookingModal.module.css";
 
@@ -11,6 +12,11 @@ interface BookingModalProps {
   room: Room;
   hotelName: string;
   onClose: () => void;
+}
+
+interface BookingApiResponse {
+  message: string;
+  booking: Booking;
 }
 
 export const BookingModal: React.FC<BookingModalProps> = ({
@@ -100,16 +106,29 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         return;
       }
 
-      const booking = bookingResult.payload;
+      // Read the actual API response.
+      // The backend returns { message, booking }.
+      const response =
+        bookingResult.payload as unknown as BookingApiResponse;
 
-      console.log("BOOKING RESPONSE:", booking);
+      const booking = response.booking;
+
+      console.log("BOOKING SUCCESS MESSAGE:", response.message);
+      console.log("BOOKING DETAILS:", booking);
       console.log("BOOKING ID:", booking?.id);
       console.log("ROOM:", room);
       console.log("HOTEL NAME:", hotelName);
-      // Close the modal and navigate to Checkout.
-      onClose();
 
-      navigate("/guest/hotel/:id/checkout", {
+      // Confirm that the booking ID exists.
+      if (!booking?.id) {
+        setMessage(
+          "Booking was created, but the booking details were not returned correctly."
+        );
+        return;
+      }
+
+      // Navigate to Checkout with the complete booking details.
+      navigate(`/guest/hotel/${room.hotel_id}/checkout`, {
         state: {
           booking,
           room,
@@ -120,7 +139,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({
           estimatedTotal,
         },
       });
-    } catch {
+
+      onClose();
+
+    } catch (error) {
+      console.error("Booking error:", error);
+
       setMessage(
         "Something went wrong while creating your booking. Please try again."
       );
