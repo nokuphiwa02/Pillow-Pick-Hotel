@@ -151,7 +151,7 @@ const Checkout = () => {
         setMessage("The Paystack checkout URL is invalid.");
         return;
       }
-
+      console.log("PAYSTACK AUTHORIZATION URL:", url.href);
       window.location.assign(url.href);
     } catch (err) {
       console.error("Payment error:", err);
