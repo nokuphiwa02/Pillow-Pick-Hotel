@@ -4,8 +4,8 @@ export interface Profile {
   user_id: number;
   name: string;
   email: string;
-  password: string;
-  phone: string;
+  password: string | null;
+  phone: string | null;
   profile_picture: string;
   address: string;
   created_at: Date;

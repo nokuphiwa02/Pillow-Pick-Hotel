@@ -1,10 +1,17 @@
+
 import { Request, Response } from "express";
 import * as oAuthoService from "../service/oAuthoService";
 import * as profileService from "../service/profileService";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { OAuth2Client } from "google-auth-library";
 
+// Google OAuth client
+const googleClient = new OAuth2Client(
+    process.env.GOOGLE_CLIENT_ID
+);
 
+// Register with email and password
 export const register = async (req: Request, res: Response) => {
     const { email, name, password, phone } = req.body;
 
@@ -60,6 +67,7 @@ export const register = async (req: Request, res: Response) => {
                 address: profile.address
             }
         });
+
     } catch (error) {
         console.error("Registration error:", error);
 
@@ -69,102 +77,270 @@ export const register = async (req: Request, res: Response) => {
     }
 };
 
+// Login with email and password
 export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
+
     if (!email || !password) {
-        return res.status(400).json({ message: "Email and password are required" });
+        return res.status(400).json({
+            message: "Email and password are required"
+        });
     }
+
     try {
         const user = await oAuthoService.getOAuthUserByEmail(email);
 
         if (!user) {
-            return res.status(404).json({ message: "invalid email" });
+            return res.status(404).json({
+                message: "Invalid email"
+            });
         }
+
+        // Prevent Google-only accounts from using password login
+        if (!user.password) {
+            return res.status(400).json({
+                message: "This account uses Google login. Please sign in with Google."
+            });
+        }
+
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            return res.status(401).json({ message: "Invalid password" });
+            return res.status(401).json({
+                message: "Invalid password"
+            });
         }
 
-      const payload = {id: user.id, email: user.email,role: user.role};
+        const payload = {
+            id: user.id,
+            email: user.email,
+            role: user.role
+        };
 
-        const token = jwt.sign(payload, process.env.JWT_SECRET!, {
-            expiresIn: "1h",
+        const token = jwt.sign(
+            payload,
+            process.env.JWT_SECRET!,
+            {
+                expiresIn: "1h"
+            }
+        );
+
+        console.log(`User ${email} logged in successfully`);
+
+        return res.status(200).json({
+            message: "Login Successful",
+            token,
+            user
         });
 
-        console.log(`user & {email} logged in successfully`);
-        res.status(200).json({ message: "Login Successful", token,user });
     } catch (error) {
         console.error("Login error:", error);
-        res.status(500).json({ message: "Error loging in" });
+
+        return res.status(500).json({
+            message: "Error logging in"
+        });
     }
 };
 
+// Login with Google
+export const googleLogin = async (req: Request, res: Response) => {
+    const { credential } = req.body;
+
+    if (!credential) {
+        return res.status(400).json({
+            message: "Google credential is required"
+        });
+    }
+
+    try {
+        // Verify Google ID token
+        const ticket = await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+
+        const payload = ticket.getPayload();
+
+        if (
+            !payload ||
+            !payload.sub ||
+            !payload.email ||
+            payload.email_verified !== true
+        ) {
+            return res.status(401).json({
+                message: "Invalid or unverified Google account"
+            });
+        }
+
+        const googleId = payload.sub;
+        const email = payload.email.toLowerCase();
+        const name = payload.name || email;
+
+        // Check if Google user already exists
+        let user = await oAuthoService.findGoogleUser(googleId);
+
+        if (!user) {
+            // Check if email already belongs to another account
+            const existingUser =
+                await oAuthoService.getOAuthUserByEmail(email);
+
+            if (existingUser) {
+                return res.status(409).json({
+                    message: "An account with this email already exists. Please use your existing login."
+                });
+            }
+
+            // Create new Google user
+            user = await oAuthoService.createGoogleUser(
+                googleId,
+                email,
+                name
+            );
+
+            // Create Google user's profile
+            await profileService.createProfile({
+                user_id: user.id,
+                name: user.name,
+                email: user.email,
+                password: null,
+                phone: null,
+                profile_picture: payload.picture || "",
+                address: ""
+            });
+        }
+
+        // Generate HavenStay JWT
+        const token = jwt.sign(
+            {
+                id: user.id,
+                email: user.email,
+                role: user.role
+            },
+            process.env.JWT_SECRET!,
+            {
+                expiresIn: "1h"
+            }
+        );
+
+        return res.status(200).json({
+            message: "Google login successful",
+            token,
+            user
+        });
+
+    } catch (error) {
+        console.error("Google login error:", error);
+
+        return res.status(500).json({
+            message: "Google login failed"
+        });
+    }
+};
+
+// Get all users (Admin only)
 export const getAllUsers = async (req: Request, res: Response) => {
     try {
-        if (req.user!.role !== 'admin') {
-            return res.status(403).json({ message: "Only Admin can get all users" })
+        if (req.user!.role !== "admin") {
+            return res.status(403).json({
+                message: "Only Admin can get all users"
+            });
         }
 
         const users = await oAuthoService.findAllusers();
-        return res.status(200).json(users)
+
+        return res.status(200).json(users);
 
     } catch (error) {
-        console.log(error)
-        return res.status(500).json({ message: "Error retrieving user" })
+        console.log(error);
+
+        return res.status(500).json({
+            message: "Error retrieving users"
+        });
     }
 };
 
-export const getUserById = async(req: Request, res:Response) => {
-    try{
-        // if(req.user!.role !== 'guest'){
-        // return res.status(403).json({ message: "Only guest can get users by Id" })
-        // }
-       const id = parseInt(req.params.id as string);
-       const user = await oAuthoService.findUserById(id)
+// Get user by ID
+export const getUserById = async (req: Request, res: Response) => {
+    try {
+        const id = parseInt(req.params.id as string);
 
-       if(!user){
-        return res.status(404).json({message:"user not found"})
-       }
-       return res.status(200).json(user)
+        const user = await oAuthoService.findUserById(id);
 
-    }catch(error){
-        console.log(error)
-     res.status(500).json({message:"error retrieving user"})
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json(user);
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            message: "Error retrieving user"
+        });
     }
 };
 
-export const updateUserProfile = async (req: Request, res:Response) => {
-    try{
-        if(req.user!.role !== 'guest'){
-        return res.status(403).json({ message: "Only guest can update profile" })
+// Update user profile
+export const updateUserProfile = async (req: Request, res: Response) => {
+    try {
+        if (req.user!.role !== "guest") {
+            return res.status(403).json({
+                message: "Only guests can update profiles"
+            });
         }
-        const id = parseInt(req.params.id as string)
-        const updateUser = await oAuthoService.updateUserById(id,req.body);
 
-        if(!updateUser){
-            return res.status(404).json({message:"User not found"})
+        const id = parseInt(req.params.id as string);
+
+        const updateUser = await oAuthoService.updateUserById(id, req.body);
+
+        if (!updateUser) {
+            return res.status(404).json({
+                message: "User not found"
+            });
         }
-        res.status(200).json(updateUser)
 
-    }catch(error){
-      res.status(500).json({message:"error updating profile"})
+        return res.status(200).json(updateUser);
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Error updating profile"
+        });
     }
 };
 
-export const deleteUserProfile = async(req: Request,res:Response) => {
-    try{
-          if (req.user!.role !== 'admin') {
-            return res.status(403).json({ message: "Only Admin can delete user" })
+// Delete user (Admin only)
+export const deleteUserProfile = async (req: Request, res: Response) => {
+    try {
+        if (req.user!.role !== "admin") {
+            return res.status(403).json({
+                message: "Only Admin can delete users"
+            });
         }
-        const id =parseInt(req.params.id as string)
-        const deleteUser = await oAuthoService.deleteUserById(id)
 
-        if(!deleteUser){
-            return res.status(404).json({message:"user not found"});
+        const id = parseInt(req.params.id as string);
+
+        const deleteUser = await oAuthoService.deleteUserById(id);
+
+        if (!deleteUser) {
+            return res.status(404).json({
+                message: "User not found"
+            });
         }
-        res.status(200).json({message:"User Deleted successfully"});
-    }catch(error){
-        res.status(500).json({message:"Error deleting user"})
+
+        return res.status(200).json({
+            message: "User deleted successfully"
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Error deleting user"
+        });
     }
 };
