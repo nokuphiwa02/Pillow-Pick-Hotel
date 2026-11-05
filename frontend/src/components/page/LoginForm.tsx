@@ -226,13 +226,13 @@ export const LoginForm = () => {
           </p>
         )}
 
-        <button
+        {/* <button
           className={styles.registerBtn}
           type="button"
           onClick={signUp}
         >
           Sign up
-        </button>
+        </button> */}
 
        <p className={styles.account}>
          Don't have an account?{" "}
