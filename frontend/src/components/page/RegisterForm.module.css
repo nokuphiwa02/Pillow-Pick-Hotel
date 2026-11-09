@@ -128,3 +128,19 @@ input:focus {
   font-size: 0.9rem;
   border: 1px solid #fecaca;
 }
+
+.loginLink {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.loginLink span {
+  color: #007bff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.loginLink span:hover {
+  text-decoration: underline;
+}
