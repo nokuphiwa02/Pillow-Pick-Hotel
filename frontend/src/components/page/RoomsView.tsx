@@ -3,9 +3,16 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../../store";
 import styles from "../page/RoomsView.module.css";
-import { fetchRooms,createRoom,updateRoomById,deleteRoomById} from "../../redux/RoomSlice";
+import {
+  fetchRooms,
+  createRoom,
+  updateRoomById,
+  deleteRoomById,
+} from "../../redux/RoomSlice";
 import type { Room } from "../../redux/RoomSlice";
-import RoomModal, { type RoomFormValues } from "../RoomModal/RoomModal";
+import RoomModal, {
+  type RoomFormValues,
+} from "../RoomModal/RoomModal";
 
 const initialForm: RoomFormValues = {
   hotel_id: "",
@@ -24,9 +31,7 @@ export const RoomsView: React.FC = () => {
     (state: RootState) => state.rooms,
   );
 
-  const [filter, setFilter] = useState<
-    "all" | "available" | "unavailable"
-  >("all");
+  const [filter, setFilter] = useState<"all" | "available">("all");
 
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState<RoomFormValues>(initialForm);
@@ -66,61 +71,59 @@ export const RoomsView: React.FC = () => {
     setForm({ ...initialForm });
   };
 
- 
+  const handleSubmit = async (
+    values: RoomFormValues,
+    imageFile: File | null,
+  ) => {
+    setMessage("");
 
-const handleSubmit = async (
-  values: RoomFormValues,
-  imageFile: File | null,
-) => {
-  setMessage("");
+    try {
+      const formData = new FormData();
 
-  try {
-    const formData = new FormData();
+      formData.append("hotel_id", values.hotel_id);
+      formData.append("room_type", values.room_type);
+      formData.append("capacity", values.capacity);
+      formData.append("quantity", values.quantity);
+      formData.append("description", values.description);
+      formData.append("facilities", values.facilities);
+      formData.append("price_per_night", values.price_per_night);
 
-    formData.append("hotel_id", values.hotel_id);
-    formData.append("room_type", values.room_type);
-    formData.append("capacity", values.capacity);
-    formData.append("quantity", values.quantity);
-    formData.append("description", values.description);
-    formData.append("facilities", values.facilities);
-    formData.append("price_per_night", values.price_per_night);
-
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
-
-    if (editingRoomId !== null) {
-      await dispatch(
-        updateRoomById({
-          id: editingRoomId,
-          roomData: formData,
-        }),
-      ).unwrap();
-
-      setMessage("Room updated successfully!");
-    } else {
-      if (!imageFile) {
-        setMessage("Please select a room image.");
-        return;
+      if (imageFile) {
+        formData.append("image", imageFile);
       }
 
-      await dispatch(createRoom(formData)).unwrap();
+      if (editingRoomId !== null) {
+        await dispatch(
+          updateRoomById({
+            id: editingRoomId,
+            roomData: formData,
+          }),
+        ).unwrap();
 
-      setMessage("Room created successfully!");
+        setMessage("Room updated successfully!");
+      } else {
+        if (!imageFile) {
+          setMessage("Please select a room image.");
+          return;
+        }
+
+        await dispatch(createRoom(formData)).unwrap();
+
+        setMessage("Room created successfully!");
+      }
+
+      closeModal();
+      await dispatch(fetchRooms()).unwrap();
+    } catch (err) {
+      console.error("Failed to save room:", err);
+
+      setMessage(
+        typeof err === "string"
+          ? err
+          : "Failed to save room. Please try again.",
+      );
     }
-
-    closeModal();
-    await dispatch(fetchRooms()).unwrap();
-  } catch (err) {
-    console.error("Failed to save room:", err);
-
-    setMessage(
-      typeof err === "string"
-        ? err
-        : "Failed to save room. Please try again.",
-    );
-  }
-};
+  };
 
   const handleDelete = async (id: number) => {
     const confirmed = window.confirm(
@@ -151,22 +154,16 @@ const handleSubmit = async (
     }
   };
 
+  // Check whether a room has available quantity.
   const isRoomAvailable = (room: Room): boolean => {
-    if (
-      "is_available" in room &&
-      typeof room.is_available === "boolean"
-    ) {
-      return room.is_available;
-    }
-
     return Number(room.quantity) > 0;
   };
 
+  // Filter rooms.
   const filteredRooms = rooms.filter((room) => {
-    const available = isRoomAvailable(room);
-
-    if (filter === "available") return available;
-    if (filter === "unavailable") return !available;
+    if (filter === "available") {
+      return isRoomAvailable(room);
+    }
 
     return true;
   });
@@ -196,6 +193,7 @@ const handleSubmit = async (
         </p>
       )}
 
+      {/* Room Filters */}
       <div className={styles.filterButtons}>
         <button
           type="button"
@@ -211,14 +209,6 @@ const handleSubmit = async (
           onClick={() => setFilter("available")}
         >
           Available
-        </button>
-
-        <button
-          type="button"
-          className={filter === "unavailable" ? styles.activeFilter : ""}
-          onClick={() => setFilter("unavailable")}
-        >
-          Unavailable
         </button>
       </div>
 
@@ -258,6 +248,7 @@ const handleSubmit = async (
                     <td>
                       R{Number(room.price_per_night).toFixed(2)}
                     </td>
+
                     <td>
                       <span
                         className={
@@ -269,6 +260,7 @@ const handleSubmit = async (
                         {available ? "Available" : "Unavailable"}
                       </span>
                     </td>
+
                     <td>
                       <div className={styles.roomActions}>
                         <button
@@ -294,7 +286,9 @@ const handleSubmit = async (
 
               {filteredRooms.length === 0 && (
                 <tr>
-                  <td colSpan={10}>No rooms found.</td>
+                  <td colSpan={10}>
+                    No rooms found.
+                  </td>
                 </tr>
               )}
             </tbody>
