@@ -469,6 +469,13 @@ export const AdminDashboard: React.FC = () => {
           >
             👤 Users
           </button>
+          <button
+          type="button"
+          className={styles.sidebarLinkBtn}
+          onClick={() => navigate('/admin/add-admin')}
+          >
+            ➕ Add Admin
+          </button>
         </nav>
       </aside>
 
