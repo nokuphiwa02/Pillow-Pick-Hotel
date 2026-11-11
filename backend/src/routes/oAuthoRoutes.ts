@@ -7,6 +7,7 @@ import {
     getUserById,
     login,
     register,
+    registerAdmin,
     updateUserProfile,
     googleLogin
 } from "../controllers/oAuthoControllers";
@@ -17,6 +18,7 @@ const router = Router();
 
 // Normal authentication
 router.post("/register", register);
+router.post("/register-admin", protect, registerAdmin);
 router.post("/login", login);
 
 // Google authentication
