@@ -35,20 +35,22 @@ export const getOAuthUserByEmail = async (
 };
 
 // Create normal email/password user
+// Create normal or admin user
 export const createOAuthUser = async (
   email: string,
   name: string,
   password: string,
-  phone: number
+  phone: number,
+  role: "admin" | "guest" = "guest"
 ): Promise<OAuthUser> => {
   const salt = await bcrypt.genSalt(10);
   const password_hash = await bcrypt.hash(password, salt);
 
   const { rows } = await query(
-    `INSERT INTO oauth_users (email, name, phone, password)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO oauth_users (email, name, phone, password, role)
+     VALUES ($1, $2, $3, $4, $5)
      RETURNING *`,
-    [email, name, phone, password_hash]
+    [email, name, phone, password_hash, role]
   );
 
   return rows[0];
