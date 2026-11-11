@@ -76,6 +76,75 @@ export const register = async (req: Request, res: Response) => {
         });
     }
 };
+// Register a new admin (Admin only)
+export const registerAdmin = async (
+    req: Request,
+    res: Response
+) => {
+    // Verify that the logged-in user is an admin
+    if (!req.user || req.user.role !== "admin") {
+        return res.status(403).json({
+            message: "Only administrators can register new admins."
+        });
+    }
+
+    const { email, name, password, phone } = req.body;
+
+    if (!email || !name || !password || !phone) {
+        return res.status(400).json({
+            message: "Missing required fields"
+        });
+    }
+
+    try {
+        const existingUser =
+            await oAuthoService.getOAuthUserByEmail(email);
+
+        if (existingUser) {
+            return res.status(409).json({
+                message: "Email already exists"
+            });
+        }
+
+        const user = await oAuthoService.createOAuthUser(
+            email,
+            name,
+            password,
+            phone,
+            "admin"
+        );
+
+        const profile = await profileService.createProfile({
+            user_id: user.id,
+            name: user.name,
+            email: user.email,
+            password: user.password,
+            phone: String(user.phone),
+            profile_picture: "",
+            address: ""
+        });
+
+        return res.status(201).json({
+            message: "Administrator registered successfully",
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                role: user.role
+            },
+            profile
+        });
+
+    } catch (error) {
+        console.error("Admin registration error:", error);
+
+        return res.status(500).json({
+            message: "Error registering administrator"
+        });
+    }
+};
+
 
 // Login with email and password
 export const login = async (req: Request, res: Response) => {
